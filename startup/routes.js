@@ -6,14 +6,14 @@ const globalErrorHandler = require('../middleware/globalErrorHandler')
 
 const example = require('../routes/example')
 
+const limit = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too Many Requests',
+})
+
 module.exports = function (app) {
   app.use(express.json())
-
-  const limit = rateLimit({
-    max: 100,
-    windowMs: 60 * 60 * 1000,
-    message: 'Too Many Requests',
-  })
 
   app.use('/api', limit)
   app.use('/api/v1/users', example)
