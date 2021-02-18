@@ -32,11 +32,11 @@ const validateRoom = (room) => {
   const schema = Joi.object({
     roomId: Joi.ObjectId().required(),
     beds: Joi.object({
-      single: Joi.number.min(0).required(),
-      double: Joi.number.min(0).required(),
+      single: Joi.number.min(0),
+      double: Joi.number.min(0),
     }),
-    price: Joi.number.min(0).required(),
-    description: Joi.string().min(0).required(),
+    price: Joi.number.min(0),
+    description: Joi.string().min(0),
   })
 
   return schema.validate(room)

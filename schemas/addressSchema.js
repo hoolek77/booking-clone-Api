@@ -22,6 +22,10 @@ const adressSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  buildingNumber: {
+    type: Number,
+    required: true,
+  },
 })
 
 const Address = mongoose.model('Address', adressSchema)
