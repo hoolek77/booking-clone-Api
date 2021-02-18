@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const mongoose = require('mongoose');
+const Joi = require('joi')
+const mongoose = require('mongoose')
 
 const reservationSchema = new mongoose.Schema({
   userId: {
@@ -23,7 +23,7 @@ const reservationSchema = new mongoose.Schema({
     required: true,
   },
   people: {
-    type: new mongoose.Schema({
+    type: {
       adults: {
         type: Number,
         required: true,
@@ -34,7 +34,7 @@ const reservationSchema = new mongoose.Schema({
         required: true,
         min: 0,
       },
-    }),
+    },
     required: true,
   },
   isPaid: {
@@ -45,9 +45,9 @@ const reservationSchema = new mongoose.Schema({
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   },
-});
+})
 
-const Reservation = mongoose.model('Reservation', reservationSchema);
+const Reservation = mongoose.model('Reservation', reservationSchema)
 
 const validateReservation = (reservation) => {
   const schema = Joi.object({
@@ -60,10 +60,10 @@ const validateReservation = (reservation) => {
       children: Joi.number.min(0).required(),
       adults: Joi.number.min(0).required(),
     }),
-  });
+  })
 
-  return schema.validate(reservation);
-};
+  return schema.validate(reservation)
+}
 
-exports.validate = validateReservation;
-exports.Reservation = Reservation;
+exports.validate = validateReservation
+exports.Reservation = Reservation
