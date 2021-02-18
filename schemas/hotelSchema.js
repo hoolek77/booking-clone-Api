@@ -46,7 +46,7 @@ const validateHotel = (hotel) => {
     hotelId: Joi.ObjectId().required(),
     ownerId: Joi.ObjectId().required(),
     localization: Joi.object(Address),
-    phoneNumber: Joi.number,
+    phoneNumber: Joi.number.min(100000000),
     name: Joi.string().min(1),
     clientsRate: Joi.object(Rate),
     email: Joi.email(),

@@ -1,9 +1,14 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
+import { Hotel } from './hotelSchema'
 
 const roomSchema = new mongoose.Schema({
   roomId: {
     type: mongoose.Types.ObjectId,
+    required: true,
+  },
+  hotelId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   beds: {
@@ -35,8 +40,8 @@ const validateRoom = (room) => {
       single: Joi.number.min(0),
       double: Joi.number.min(0),
     }),
-    price: Joi.number.min(0),
-    description: Joi.string().min(0),
+    price: Joi.number.min(10),
+    description: Joi.string(),
   })
 
   return schema.validate(room)

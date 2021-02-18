@@ -1,12 +1,17 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
+import { Hotel } from './hotelSchema'
 
 const rateSchema = new mongoose.Schema({
   rateId: {
     type: mongoose.Types.ObjectId,
     required: true,
   },
-  personId: {
+  hotelId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Person',
   },

@@ -37,6 +37,7 @@ const validateAddress = (address) => {
     city: Joi.string().min(0).required(),
     zipcode: Joi.number.min(0).required(),
     street: Joi.string().min(0).required(),
+    buildingNumber: Joi.number.min(1).required(),
   })
 
   return schema.validate(address)
