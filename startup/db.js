@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 module.exports = function () {
   mongoose
-    .connect("mongodb://localhost/bookingcloneDB", { useNewUrlParser: true })
-    .then(() => console.info("Connected to MongoDB..."));
-};
+    .connect('mongodb://localhost/bookingcloneDB', { useNewUrlParser: true })
+    .then(() => console.info('Connected to MongoDB...'))
+}
