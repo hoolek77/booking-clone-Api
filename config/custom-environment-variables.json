@@ -1,3 +1,10 @@
 {
-  "jwtPrivateKey": "bookingclone_jwtPrivateKey"
+  "jwtPrivateKey": "JWT_PRIVATE_KEY",
+  "database": {
+    "host": "DB_HOST",
+    "port": "DB_PORT",
+    "user": "DB_USER",
+    "password": "DB_PASSWORD",
+    "dbName": "DB_NAME"
+  }
 }
