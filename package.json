@@ -12,7 +12,8 @@
     "mongoose": "^5.11.16"
   },
   "scripts": {
-    "start": "nodemon"
+    "start": "node index",
+    "start:dev": "nodemon"
   },
   "repository": {
     "type": "git",
