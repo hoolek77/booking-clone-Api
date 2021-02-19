@@ -4,14 +4,17 @@ const mongoose = require('mongoose')
 const reservationSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   hotelId: {
     type: mongoose.Types.ObjectId,
+    ref: 'Hotel',
     required: true,
   },
   roomlId: {
     type: mongoose.Types.ObjectId,
+    ref: 'Room',
     required: true,
   },
   startDate: {
