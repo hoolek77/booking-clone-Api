@@ -1,8 +1,6 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
 import { Room } from './roomSchema'
-import { Address } from './addressSchema'
-import { Rate } from './rateSchema'
 
 const hotelSchema = new mongoose.Schema({
   hotelId: {
@@ -45,10 +43,10 @@ const validateHotel = (hotel) => {
   const schema = Joi.object({
     hotelId: Joi.ObjectId().required(),
     ownerId: Joi.ObjectId().required(),
-    localization: Joi.object(Address),
+    localization: Joi.objectId().required(),
     phoneNumber: Joi.number.min(100000000),
     name: Joi.string().min(1),
-    clientsRate: Joi.object(Rate),
+    clientsRate: Joi.objectId().required(),
     email: Joi.email(),
     description: Joi.string().min(0),
     rooms: Joi.array().items(Room),
