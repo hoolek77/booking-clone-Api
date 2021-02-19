@@ -2,17 +2,13 @@ const Joi = require('joi')
 const mongoose = require('mongoose')
 
 const rateSchema = new mongoose.Schema({
-  rateId: {
-    type: mongoose.Types.ObjectId,
-    required: true,
-  },
   hotelId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Person',
+    ref: 'User',
   },
   desc: {
     type: String,
@@ -28,11 +24,10 @@ const Rate = mongoose.model('Rate', rateSchema)
 
 const validateRate = (rate) => {
   const schema = Joi.object({
-    rateId: Joi.ObjectId().required(),
     hotelId: Joi.ObjectId().required(),
     userId: Joi.ObjectId().required(),
     desc: Joi.string(),
-    rateNumber: Joi.number.min(0).max(5),
+    rateNumber: Joi.number.min(1).max(5),
   })
   return schema.validate(rate)
 }

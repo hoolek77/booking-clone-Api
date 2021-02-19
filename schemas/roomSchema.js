@@ -2,10 +2,6 @@ const Joi = require('joi')
 const mongoose = require('mongoose')
 
 const roomSchema = new mongoose.Schema({
-  roomId: {
-    type: mongoose.Types.ObjectId,
-    required: true,
-  },
   hotelId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -34,7 +30,6 @@ const Room = mongoose.model('Room', roomSchema)
 
 const validateRoom = (room) => {
   const schema = Joi.object({
-    roomId: Joi.ObjectId().required(),
     hotelId: Joi.objectId().required(),
     beds: Joi.object({
       single: Joi.number.min(0),
