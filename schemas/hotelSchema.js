@@ -1,5 +1,6 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
+const JoiPhoneNumer = Joi.extend(require('joi-phone-number'))
 import { Room } from './roomSchema'
 
 const hotelSchema = new mongoose.Schema({
@@ -44,7 +45,7 @@ const validateHotel = (hotel) => {
     hotelId: Joi.ObjectId().required(),
     ownerId: Joi.ObjectId().required(),
     localization: Joi.objectId().required(),
-    phoneNumber: Joi.number.min(100000000),
+    phoneNumber: JoiPhoneNumer.string().phoneNumber(),
     name: Joi.string().min(1),
     clientsRate: Joi.objectId().required(),
     email: Joi.email(),
