@@ -55,7 +55,7 @@ const validateReservation = (reservation) => {
     endDate: Joi.date().required(),
     people: Joi.object({
       children: Joi.number.min(0).required(),
-      adults: Joi.number.min(0).required(),
+      adults: Joi.number.min(1).required(),
     }),
   })
 
