@@ -9,6 +9,7 @@ module.exports = function () {
     .connect(`mongodb://${host}/${dbName}`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useCreateIndex: true,
     })
     .then(() => console.info('Connected to MongoDB...'))
 }
