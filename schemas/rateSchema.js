@@ -29,3 +29,4 @@ const validateRate = (rate) => {
 
 exports.validate = validateRate
 exports.Rate = Rate
+exports.clientRateSchema = rateSchema
