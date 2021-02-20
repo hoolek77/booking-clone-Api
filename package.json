@@ -4,17 +4,25 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "config": "^3.3.3",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-mongo-sanitize": "^2.0.2",
+    "express-rate-limit": "^5.2.6",
     "helmet": "^4.4.1",
+    "hpp": "^0.2.3",
+    "joi": "^17.4.0",
+    "joi-phone-number": "^5.0.1",
     "mongoose": "^5.11.16",
-    "joi-phone-number": "^5.0.1"
+    "xss-clean": "^0.1.1"
   },
   "scripts": {
-    "start": "node index",
-    "start:dev": "nodemon"
+    "start": "node index.js",
+    "start:dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
