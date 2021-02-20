@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const roomSchema = new mongoose.Schema({
   hotelId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    ref: 'Hotel',
   },
   beds: {
     single: {

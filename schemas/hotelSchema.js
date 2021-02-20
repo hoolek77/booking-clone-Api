@@ -7,7 +7,7 @@ import { clientRateSchema } from './rateSchema'
 const hotelSchema = new mongoose.Schema({
   ownerId: {
     type: mongoose.Types.ObjectId,
-    required: true,
+    ref: 'User',
   },
   localization: [
     {
@@ -40,7 +40,7 @@ const Hotel = mongoose.model('Hotel', hotelSchema)
 const validateHotel = (hotel) => {
   const schema = Joi.object({
     ownerId: Joi.ObjectId().required(),
-    localization: Joi.objectId().required(),
+    localization: Joi.object().required(),
     phoneNumber: JoiPhoneNumer.string().phoneNumber(),
     name: Joi.string().min(1),
     clientsRate: Joi.array().items(Rate),
