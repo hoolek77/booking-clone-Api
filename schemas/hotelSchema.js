@@ -12,7 +12,7 @@ const hotelSchema = new mongoose.Schema({
   },
   localization: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Addres',
+    ref: 'Address',
     required: true,
   },
 
