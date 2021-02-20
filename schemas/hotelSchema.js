@@ -8,13 +8,14 @@ const hotelSchema = new mongoose.Schema({
   ownerId: {
     type: mongoose.Types.ObjectId,
     ref: 'User',
+    required: true,
   },
-  localization: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Addres',
-    },
-  ],
+  localization: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Addres',
+    required: true,
+  },
+
   phoneNumber: {
     type: Number,
     required: true,
