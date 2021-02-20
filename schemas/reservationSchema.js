@@ -27,17 +27,15 @@ const reservationSchema = new mongoose.Schema(
       required: true,
     },
     people: {
-      type: {
-        adults: {
-          type: Number,
-          required: true,
-          min: 1,
-        },
-        children: {
-          type: Number,
-          required: true,
-          min: 0,
-        },
+      adults: {
+        type: Number,
+        required: true,
+        min: 1,
+      },
+      children: {
+        type: Number,
+        required: true,
+        min: 0,
       },
       required: true,
     },
