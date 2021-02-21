@@ -3,7 +3,7 @@ const express = require('express')
 const { Hotel } = require('../models/hotel')
 const router = express.Router()
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   Hotel.find()
     .limit(req.params.limit)
     .exec()
