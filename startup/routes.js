@@ -6,6 +6,7 @@ const globalErrorHandler = require('../middleware/globalErrorHandler')
 
 const example = require('../routes/example')
 const hotels = require('../routes/hotels')
+const owner = require('../routes/owner')
 
 const limit = rateLimit({
   max: 100,
@@ -19,6 +20,7 @@ module.exports = function (app) {
   app.use('/api', limit)
   app.use('/api/v1/users', example)
   app.use('/api/hotels', hotels)
+  app.use('/api/owner', owner)
 
   app.use('*', (req, res, next) => {
     next(new ApiError(404, 'Route is not supported.'), req, res, next)
