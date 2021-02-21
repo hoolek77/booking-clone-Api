@@ -6,24 +6,15 @@ const router = express.Router()
 
 // TODO: add auth middlewear, when it will be ready
 
-router.get('/hotels', (req, res) => {
-  Hotel.find()
-    .limit(req.params.limit)
-    .exec()
-    .then((hotel) => {
-      if (!hotel) {
-        res.status(404).json({ message: 'No hotels in database' })
-      }
-      res.status(200).json({ hotel: hotel })
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err })
-    })
+router.get('/hotels', async (req, res) => {
+  const hotel = await Hotel.find()
+
+  res.status(200).send(hotel)
 })
 
 router.post('/hotel', async (req, res) => {
   const { error } = validate(req.body)
-  if (error) return res.status(400).json({ error: error })
+  if (error) return res.status(400).send(error.details[0].message)
 
   let hotel = new Hotel({
     ownerId: req.body.ownerId,
@@ -38,10 +29,13 @@ router.post('/hotel', async (req, res) => {
 
   await hotel.save()
 
-  res.send(hotel)
+  res.status(200).send(hotel)
 })
 
 router.put('/hotel/:id', async (req, res) => {
+  const { error } = validate(req.body)
+  if (error) return res.status(400).send(error.details[0].message)
+
   const hotel = await Hotel.findByIdAndUpdate(req.params.id, {
     ownerId: req.body.ownerId,
     localization: req.body.localization,
@@ -56,57 +50,52 @@ router.put('/hotel/:id', async (req, res) => {
   if (!hotel) {
     return res.status(404).send('Hotel with given ID was not found')
   }
-  res.send(hotel)
+  res.status.send(hotel)
 })
 
-router.delete('/hotel/:id', (req, res) => {
-  Reservation.findById({ hotelId: req.params.id })
-    .exec()
-    .then((reservation) => {
-      if (reservation.length > 0) {
-        return res.status(409).json({
-          message: 'This hotel has reservations, removal not possible',
-        })
-      } else {
-        Hotel.deleteOne({ _id: req.params.id })
-          .exec()
-          .then(() => {
-            res.status(200).json({ message: 'Hotel deleted' })
-          })
-          .catch((err) => {
-            res.status(500).json({ error: err })
-          })
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err })
-    })
+router.delete('/hotel/:id', async (req, res) => {
+  const id = req.params.id
+  try {
+    const reservation = await Reservation.find({ hotelId: id })
+
+    if (reservation) return res.status(409).send('Remove reservations')
+
+    await Hotel.findByIdAndDelete(id)
+    res.sendStatus(200)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send('Something went wrong')
+  }
 })
 
-router.delete('/reservation/:id', (req, res) => {
-  Reservation.deleteOne()
-    .exec()
-    .then((reservation) => {
-      const startDate = new Date(reservation.startDate)
-      const currentDate = new Date('<YYYY-mm-ddTHH:MM:ssZ>')
+router.delete('/reservation/:id', async (req, res) => {
+  const id = req.params.id
+  try {
+    const reservation = await Reservation.findByIdAndDelete(id)
+    if (!reservation) {
+      return res.status(404).send('Reservation with given ID was not found')
+    }
 
-      const msPerDay = 1000 * 60 * 60 * 24
-      const msBetween = startDate.getTime() - currentDate.getTime()
-      const days = Math.floor(msBetween / msPerDay)
+    const startDate = new Date(reservation.startDate)
+    const currentDate = new Date('<YYYY-mm-ddTHH:MM:ssZ>')
 
-      if (reservation.isPaid || days <= 3) {
-        return res.status(404).json({
-          message:
-            'Can not delete reservation; reservation is paid or the reservation is for three days or less',
-        })
-      } else {
-        res.status(200).json({ message: 'reservation deleted' })
-      }
-    })
-    .catch((err) => {
-      console.log(err)
-      res.status(500).json({ error: err })
-    })
+    const msPerDay = 1000 * 60 * 60 * 24
+    const msBetween = startDate.getTime() - currentDate.getTime()
+    const days = Math.floor(msBetween / msPerDay)
+
+    if (reservation.isPaid || days <= 3) {
+      return res
+        .status(404)
+        .send(
+          'Can not delete reservation; reservation is paid or the reservation is for three days or less'
+        )
+    }
+
+    res.status(200).send('Reservation deleted')
+  } catch (err) {
+    console.log(err)
+    res.status(500).send('Something went wrong')
+  }
 })
 
 module.exports = router
