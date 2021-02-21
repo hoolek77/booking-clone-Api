@@ -1,8 +1,8 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
 const JoiPhoneNumer = Joi.extend(require('joi-phone-number'))
-import { Room } from './room'
-import { clientRateSchema } from './rate'
+const { Room } = require('./room')
+const { clientRateSchema } = require('./rate')
 
 const hotelSchema = new mongoose.Schema({
   ownerId: {
@@ -33,7 +33,7 @@ const hotelSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  rooms: [{ type: Schema.Types.ObjectId, ref: 'Room' }],
+  rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }],
 })
 
 const Hotel = mongoose.model('Hotel', hotelSchema)

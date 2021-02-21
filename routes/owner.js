@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const express = require('express')
 const { Hotel, validate } = require('../models/hotel')
-const { Reservation } = require('../schemas/reservationSchema')
+const { Reservation } = require('../models/reservation')
 const router = express.Router()
 
 // TODO: add auth middlewear, when it will be ready
@@ -16,16 +16,7 @@ router.post('/hotel', async (req, res) => {
   const { error } = validate(req.body)
   if (error) return res.status(400).send(error.details[0].message)
 
-  let hotel = new Hotel({
-    ownerId: req.body.ownerId,
-    localization: req.body.localization,
-    phoneNumber: req.body.phoneNumber,
-    name: req.body.name,
-    clientsRates: null,
-    email: req.body.email,
-    description: req.body.description,
-    rooms: [req.body.rooms],
-  })
+  const hotel = new Hotel(req.body)
 
   await hotel.save()
 
@@ -36,21 +27,12 @@ router.put('/hotel/:id', async (req, res) => {
   const { error } = validate(req.body)
   if (error) return res.status(400).send(error.details[0].message)
 
-  const hotel = await Hotel.findByIdAndUpdate(req.params.id, {
-    ownerId: req.body.ownerId,
-    localization: req.body.localization,
-    phoneNumber: req.body.phoneNumber,
-    name: req.body.name,
-    clientsRates: null,
-    email: req.body.email,
-    description: req.body.description,
-    rooms: [req.body.rooms],
-  })
+  const hotel = await Hotel.findByIdAndUpdate(req.params.id, req.body)
 
   if (!hotel) {
     return res.status(404).send('Hotel with given ID was not found')
   }
-  res.status.send(hotel)
+  res.status(200).send(hotel)
 })
 
 router.delete('/hotel/:id', async (req, res) => {
@@ -58,7 +40,8 @@ router.delete('/hotel/:id', async (req, res) => {
   try {
     const reservation = await Reservation.find({ hotelId: id })
 
-    if (reservation) return res.status(409).send('Remove reservations')
+    if (reservation.length > 0)
+      return res.status(400).send('Remove reservations')
 
     await Hotel.findByIdAndDelete(id)
     res.sendStatus(200)
@@ -85,7 +68,7 @@ router.delete('/reservation/:id', async (req, res) => {
 
     if (reservation.isPaid || days <= 3) {
       return res
-        .status(404)
+        .status(400)
         .send(
           'Can not delete reservation; reservation is paid or the reservation is for three days or less'
         )
