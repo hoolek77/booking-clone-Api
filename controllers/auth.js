@@ -45,11 +45,11 @@ exports.register = async (req, res) => {
       .json({ error: 'An account with this email address already exists.' })
   }
 
-  const user = new User({ ...req.body })
+  const user = new User(req.body)
 
   try {
     const savedUser = await user.save()
-    responseWithToken(res, user)
+    responseWithToken(res, savedUser)
   } catch (error) {
     res.status(400).json({ error })
   }
