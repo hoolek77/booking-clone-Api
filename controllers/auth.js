@@ -32,12 +32,6 @@ const responseWithToken = (res, user) => {
 
 exports.register = async (req, res, next) => {
   try {
-    const { error } = validateCreateUser(req.body)
-
-    if (error) {
-      throw new ApiError(400, error.details[0].message)
-    }
-
     const isEmailExist = await User.findOne({ email: req.body.email })
 
     if (isEmailExist) {
@@ -55,12 +49,6 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const { error } = validateLoginUser(req.body)
-
-    if (error) {
-      throw new ApiError(400, error.details[0].message)
-    }
-
     const user = await User.findOne({ email: req.body.email })
 
     if (!user) {

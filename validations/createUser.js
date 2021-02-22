@@ -1,8 +1,9 @@
 const Joi = require('joi')
+const { validateRequest } = require('../helpers/validationError')
 const { USER_ROLE, HOTEL_OWNER_ROLE } = require('../models/roles')
 const JoiPhoneNumer = Joi.extend(require('joi-phone-number'))
 
-module.exports = function validateCreateUser(userObj) {
+module.exports = function validateCreateUser(req, res, next) {
   const schema = Joi.object({
     email: Joi.string().max(255).email().required(),
     password: Joi.string().min(8).max(30).required(),
@@ -14,5 +15,5 @@ module.exports = function validateCreateUser(userObj) {
     role: Joi.string().valid(USER_ROLE, HOTEL_OWNER_ROLE),
   }).with('password', 'repeatPassword')
 
-  return schema.validate(userObj)
+  validateRequest(req, next, schema)
 }

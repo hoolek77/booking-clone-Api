@@ -1,10 +1,11 @@
 const Joi = require('joi')
+const { validateRequest } = require('../helpers/validationError')
 
-module.exports = function loginUser(userObj) {
+module.exports = function validateLoginUser(req, res, next) {
   const schema = Joi.object({
     email: Joi.string().max(255).email().required(),
     password: Joi.string().min(8).max(30).required(),
   })
 
-  return schema.validate(userObj)
+  validateRequest(req, next, schema)
 }
