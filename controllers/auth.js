@@ -26,7 +26,6 @@ const responseWithToken = (res, user) => {
     error: null,
     data: {
       userId: user._id,
-      userEmail: user.email,
     },
   })
 }
