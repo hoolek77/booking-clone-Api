@@ -1,6 +1,7 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const { SUPPORTED_ROLES, USER_ROLE } = require('./roles')
 
 const salt = +process.env.BCRYPT_SALT || 10
 
@@ -48,8 +49,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['admin', 'user', 'hotelOwner'],
-      default: 'user',
+      enum: SUPPORTED_ROLES,
+      default: USER_ROLE,
     },
   },
   { timestamps: true }
