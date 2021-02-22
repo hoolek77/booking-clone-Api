@@ -5,6 +5,7 @@ const config = require('config')
 const User = require('../models/user')
 const validateCreateUser = require('../validations/createUser')
 const validateLoginUser = require('../validations/loginUser')
+const ApiError = require('../helpers/apiError')
 
 const createToken = (user) => {
   const expiresIn = 60 * 60 // one hour
@@ -30,49 +31,51 @@ const responseWithToken = (res, user) => {
   })
 }
 
-exports.register = async (req, res) => {
-  const { error } = validateCreateUser(req.body)
-
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message })
-  }
-
-  const isEmailExist = await User.findOne({ email: req.body.email })
-
-  if (isEmailExist) {
-    return res
-      .status(400)
-      .json({ error: 'An account with this email address already exists.' })
-  }
-
-  const user = new User(req.body)
-
+exports.register = async (req, res, next) => {
   try {
+    const { error } = validateCreateUser(req.body)
+
+    if (error) {
+      throw new ApiError(400, error.details[0].message)
+    }
+
+    const isEmailExist = await User.findOne({ email: req.body.email })
+
+    if (isEmailExist) {
+      throw new ApiError(400, 'Account with this email address already exists.')
+    }
+
+    const user = new User(req.body)
+
     const savedUser = await user.save()
     responseWithToken(res, savedUser)
   } catch (error) {
-    res.status(400).json({ error })
+    next(error)
   }
 }
 
-exports.login = async (req, res) => {
-  const { error } = validateLoginUser(req.body)
+exports.login = async (req, res, next) => {
+  try {
+    const { error } = validateLoginUser(req.body)
 
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message })
+    if (error) {
+      throw new ApiError(400, error.details[0].message)
+    }
+
+    const user = await User.findOne({ email: req.body.email })
+
+    if (!user) {
+      throw new ApiError(400, 'Email or password is wrong.')
+    }
+
+    const validPassword = await bcrypt.compare(req.body.password, user.password)
+
+    if (!validPassword) {
+      throw new ApiError(400, 'Email or password is wrong.')
+    }
+
+    responseWithToken(res, user)
+  } catch (error) {
+    next(error)
   }
-
-  const user = await User.findOne({ email: req.body.email })
-
-  if (!user) {
-    return res.status(400).json({ error: 'Email or password is wrong.' })
-  }
-
-  const validPassword = await bcrypt.compare(req.body.password, user.password)
-
-  if (!validPassword) {
-    return res.status(400).json({ error: 'Email or password is wrong.' })
-  }
-
-  responseWithToken(res, user)
 }
