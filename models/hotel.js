@@ -1,7 +1,9 @@
 const Joi = require('joi')
+const { object } = require('joi')
+Joi.objectId = require('joi-objectid')(Joi)
 const mongoose = require('mongoose')
 const JoiPhoneNumer = Joi.extend(require('joi-phone-number'))
-const { Room } = require('./room')
+const { roomSchema } = require('./room')
 const { clientRateSchema } = require('./rate')
 
 const hotelSchema = new mongoose.Schema({
@@ -33,24 +35,24 @@ const hotelSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }],
+  rooms: [roomSchema],
 })
 
 const Hotel = mongoose.model('Hotel', hotelSchema)
 
 const validateHotel = (hotel) => {
   const schema = Joi.object({
-    ownerId: Joi.ObjectId().required(),
-    localization: Joi.object().required(),
+    ownerId: Joi.objectId(),
+    localization: Joi.objectId(),
     phoneNumber: JoiPhoneNumer.string().phoneNumber(),
     name: Joi.string().min(1),
-    clientsRate: Joi.array().items(Rate),
-    email: Joi.email(),
+    clientsRate: Joi.array(),
+    email: Joi.string().email(),
     description: Joi.string().min(0),
-    rooms: Joi.array().items(Room),
+    rooms: Joi.array(),
   })
 
-  return schema.validate(hotel)
+  return schema.validate(hotel, { allowUnknown: true })
 }
 
 exports.validate = validateHotel

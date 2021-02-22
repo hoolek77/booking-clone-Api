@@ -8,6 +8,7 @@ const roomSchema = new mongoose.Schema({
     required: true,
   },
   beds: {
+    type: Object,
     single: {
       type: Number,
       require: true,
@@ -31,11 +32,11 @@ const Room = mongoose.model('Room', roomSchema)
 
 const validateRoom = (room) => {
   const schema = Joi.object({
-    hotelId: Joi.objectId().required(),
-    beds: Joi.object({
+    hotelId: Joi.objectId(),
+    beds: {
       single: Joi.number.min(0),
       double: Joi.number.min(0),
-    }),
+    },
     price: Joi.number.min(10),
     description: Joi.string(),
   })
@@ -45,3 +46,4 @@ const validateRoom = (room) => {
 
 exports.validate = validateRoom
 exports.Room = Room
+exports.roomSchema = roomSchema
