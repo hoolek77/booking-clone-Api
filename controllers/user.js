@@ -6,7 +6,7 @@ const userNotFoundError = () => new ApiError(404, 'User not found.')
 
 exports.getUser = async (req, res, next) => {
   try {
-    const user = await User.findById('test').select('-password -__v')
+    const user = await User.findById(req.userId).select('-password -__v')
 
     if (!user) {
       throw userNotFoundError()
