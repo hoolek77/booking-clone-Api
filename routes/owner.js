@@ -26,13 +26,14 @@ router.post('/hotel', async (req, res) => {
 router.put('/hotel/:id', async (req, res) => {
   const { error } = validate(req.body)
   if (error) return res.status(400).send(error.details[0].message)
+  try {
+    const hotel = await Hotel.findByIdAndUpdate(req.params.id, req.body)
 
-  const hotel = await Hotel.findByIdAndUpdate(req.params.id, req.body)
-
-  if (!hotel) {
-    return res.status(404).send('Hotel with given ID was not found')
+    res.status(200).send(hotel)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send('Something went wrong')
   }
-  res.status(200).send(hotel)
 })
 
 router.delete('/hotel/:id', async (req, res) => {
@@ -44,7 +45,7 @@ router.delete('/hotel/:id', async (req, res) => {
       return res.status(400).send('Remove reservations')
 
     await Hotel.findByIdAndDelete(id)
-    res.sendStatus(200)
+    res.status(200).send('Hotel deleted')
   } catch (err) {
     console.log(err)
     res.status(500).send('Something went wrong')
@@ -70,7 +71,7 @@ router.delete('/reservation/:id', async (req, res) => {
       return res
         .status(400)
         .send(
-          'Can not delete reservation; reservation is paid or the reservation is for three days or less'
+          'Can not delete reservation; reservation is paid or or there is less than 3 days to start the stay in the hotel'
         )
     }
 
