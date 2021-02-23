@@ -12,10 +12,6 @@ exports.getUser = async (req, res, next) => {
       throw userNotFoundError()
     }
 
-    if (!user) {
-      throw userNotFoundError()
-    }
-
     res.json(user)
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
