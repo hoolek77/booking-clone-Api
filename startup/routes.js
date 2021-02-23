@@ -7,6 +7,7 @@ const ApiError = require('../helpers/apiError')
 const globalErrorHandler = require('../middleware/globalErrorHandler')
 const verifyToken = require('../middleware/verifyToken')
 
+const reservations = require('../routes/reservations')
 const hotels = require('../routes/hotels')
 const owner = require('../routes/owner')
 const auth = require('../routes/auth')
@@ -36,7 +37,8 @@ module.exports = function (app) {
   })
 
   app.use('/api', limit)
-  app.use('/api/owner', owner)
+  app.use('/api/reservations', reservations)
+  app.use('/api/hotels', hotels)
   app.use('/api/owner', owner)
   app.use('/api/auth', auth)
   app.use('/api/user', verifyToken, user)
