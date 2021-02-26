@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const express = require('express')
 const { Reservation, validate } = require('../models/reservation')
+const ApiError = require('../helpers/apiError')
 const router = express.Router()
 
 // TODO: add auth middlewear, when it will be ready
@@ -13,7 +14,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const { error } = validate(req.body)
-  if (error) return res.status(400).json({ message: error.details[0].message })
+  if (error) throw new ApiError(400, error.details[0].message)
 
   let reservation = new Reservation(req.body)
 
@@ -34,9 +35,7 @@ router.put('/payment/:id', async (req, res) => {
 
     res.send(reservation)
   } catch {
-    return res
-      .status(404)
-      .json({ messaage: 'Reservation with the gived ID was not found.' })
+    throw new ApiError(404, 'Reservation with the gived ID was not found.')
   }
 })
 

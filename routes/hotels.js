@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const express = require('express')
 const { Hotel } = require('../models/hotel')
+const ApiError = require('../helpers/apiError')
 const router = express.Router()
 
 router.get('/', async (req, res) => {
@@ -21,7 +22,7 @@ router.get('/hotel/:hotelId', async (req, res) => {
   const hotel = await Hotel.findById(id)
 
   if (!hotel) {
-    return res.status(404).send('Hotel with provided ID not found')
+    throw new ApiError(404, 'Hotel with provided ID not found')
   }
 
   res.status(200).send(hotel)
@@ -29,9 +30,9 @@ router.get('/hotel/:hotelId', async (req, res) => {
 
 router.get('/city/:city', async (req, res) => {
   const city = req.params.city
-  const hotel = await Hotel.find({ localization: { city: city } })
+  const hotels = await Hotel.find({ localization: { city: city } })
 
-  res.status(200).send(hotel)
+  res.status(200).send(hotels)
 })
 
 module.exports = router
