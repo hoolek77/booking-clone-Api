@@ -4,21 +4,20 @@ function parseError(error) {
   return error.details.map((err) => err.message).join('\n')
 }
 
-function validateRequest(req, next, schema) {
+function validateData(data, schema) {
   const options = {
     abortEarly: false,
   }
 
-  const { error, value } = schema.validate(req.body, options)
+  const { error, value } = schema.validate(data, options)
 
   if (error) {
-    next(new ApiError(400, parseError(error)))
-  } else {
-    req.body = value
-    next()
+    throw new ApiError(400, parseError(error))
   }
+
+  return value
 }
 
 module.exports = {
-  validateRequest,
+  validateData,
 }

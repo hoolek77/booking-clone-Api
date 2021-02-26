@@ -1,47 +1,18 @@
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
-const config = require('config')
+const {
+  register,
+  login,
+  requestPasswordReset,
+  resetPassword,
+} = require('../services/auth')
 
-const User = require('../models/user')
-const validateCreateUser = require('../validations/createUser')
-const validateLoginUser = require('../validations/loginUser')
-const ApiError = require('../helpers/apiError')
-
-const createToken = (user) => {
-  const expiresIn = 60 * 60 // one hour
-  const options = { expiresIn }
-  const secret = config.get('jwtPrivateKey')
-
-  const payload = {
-    userId: user._id,
-  }
-
-  return jwt.sign(payload, secret, options)
-}
-
-const responseWithToken = (res, user) => {
-  const token = createToken(user)
-
-  res.header('X-Auth-Token', token).json({
-    error: null,
-    data: {
-      userId: user._id,
-    },
-  })
+const responseWithToken = (res, data) => {
+  return res.header('X-Auth-Token', data.token).json(data)
 }
 
 exports.register = async (req, res, next) => {
   try {
-    const isEmailExist = await User.findOne({ email: req.body.email })
-
-    if (isEmailExist) {
-      throw new ApiError(400, 'Account with this email address already exists.')
-    }
-
-    const user = new User(req.body)
-
-    const savedUser = await user.save()
-    responseWithToken(res, savedUser)
+    const data = await register(req.body)
+    return responseWithToken(res, data)
   } catch (error) {
     next(error)
   }
@@ -49,19 +20,27 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const user = await User.findOne({ email: req.body.email })
+    const data = await login(req.body)
+    return responseWithToken(res, data)
+  } catch (error) {
+    next(error)
+  }
+}
 
-    if (!user) {
-      throw new ApiError(400, 'Email or password is wrong.')
-    }
+exports.resetPasswordRequest = async (req, res, next) => {
+  try {
+    const success = await requestPasswordReset(req.body.email)
+    return res.json({ success })
+  } catch (error) {
+    next(error)
+  }
+}
 
-    const validPassword = await bcrypt.compare(req.body.password, user.password)
-
-    if (!validPassword) {
-      throw new ApiError(400, 'Email or password is wrong.')
-    }
-
-    responseWithToken(res, user)
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const { userId, token, password } = req.body
+    const success = await resetPassword(userId, token, password)
+    return res.json({ success })
   } catch (error) {
     next(error)
   }

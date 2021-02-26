@@ -1,9 +1,11 @@
 const Joi = require('joi')
+Joi.objectId = require('joi-objectid')(Joi)
 const { validateData } = require('./validateData')
 
-module.exports = function validateLoginUser(data) {
+module.exports = function validateResetPassword(data) {
   const schema = Joi.object({
-    email: Joi.string().max(255).email().required().label('Email'),
+    userId: Joi.objectId().required().label('User Id'),
+    token: Joi.string().required().label('Token'),
     password: Joi.string().min(8).max(30).required().label('Password'),
   })
 
