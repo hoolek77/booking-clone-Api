@@ -5,6 +5,7 @@
     "port": "DB_PORT",
     "user": "DB_USER",
     "password": "DB_PASSWORD",
-    "dbName": "DB_NAME"
+    "dbName": "DB_NAME",
+    "dbConnectionStringProd": "DB_CONNECTION_STRING_PROD"
   }
 }
