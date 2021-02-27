@@ -6,6 +6,7 @@
     "port": 27017,
     "user": "",
     "password": "",
-    "dbName": "bookingcloneDB"
+    "dbName": "bookingcloneDB",
+    "dbConnectionStringProd": ""
   }
 }
