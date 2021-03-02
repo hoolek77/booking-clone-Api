@@ -3,6 +3,11 @@ const { Hotel, validate } = require('../models/hotel')
 const { Reservation } = require('../models/reservation')
 const { calculateDays } = require('../helpers/calculateDays')
 
+const JoiValidate = (data) => {
+  const { error } = validate(data)
+  if (error) throw new ApiError(400, error.details[0].message)
+}
+
 exports.getHotels = async () => {
   const hotels = await Hotel.find()
 

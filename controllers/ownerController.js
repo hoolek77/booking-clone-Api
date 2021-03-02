@@ -9,11 +9,6 @@ const {
   deleteReservation,
 } = require('../services/ownerService')
 
-const JoiValidate = (data) => {
-  const { error } = validate(data)
-  if (error) throw new ApiError(400, error.details[0].message)
-}
-
 exports.getHotels = async (req, res, next) => {
   try {
     const hotels = await getHotels()
