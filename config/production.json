@@ -2,6 +2,11 @@
   "name": "Express App - Production",
   "clientUrl": "",
   "mail": {
-    "host": "prod-mail-server"
+    "user": "",
+    "pass": ""
+  },
+  "sms": {
+    "key": "",
+    "secret": ""
   }
 }

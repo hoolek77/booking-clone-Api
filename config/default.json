@@ -8,5 +8,13 @@
     "password": "",
     "dbName": "bookingcloneDB",
     "dbConnectionStringProd": ""
+  },
+  "mail": {
+    "user": "",
+    "pass": ""
+  },
+  "sms": {
+    "key": "",
+    "secret": ""
   }
 }
