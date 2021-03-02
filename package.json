@@ -10,9 +10,11 @@
     "config": "^3.3.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "email-templates": "^8.0.3",
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.0.2",
     "express-rate-limit": "^5.2.6",
+    "handlebars": "^4.7.7",
     "helmet": "^4.4.1",
     "hpp": "^0.2.3",
     "joi": "^17.4.0",
@@ -20,6 +22,9 @@
     "joi-phone-number": "^5.0.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.16",
+    "nexmo": "^2.9.1",
+    "nodemailer": "^6.4.18",
+    "nodemailer-express-handlebars": "^4.0.0",
     "xss-clean": "^0.1.1"
   },
   "engines": {

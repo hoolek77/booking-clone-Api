@@ -2,6 +2,11 @@
   "name": "Express App - Development",
   "clientUrl": "http://localhost",
   "mail": {
-    "host": "dev-mail-server"
+    "user": "",
+    "pass": ""
+  },
+  "sms": {
+    "key": "",
+    "secret": ""
   }
 }
