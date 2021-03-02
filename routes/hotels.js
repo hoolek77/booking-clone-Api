@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:limit', async (req, res) => {
-  const limit = req.params.limit
+  const limit = parseInt(req.params.limit)
   const hotels = await Hotel.find().limit(limit)
 
   res.status(200).send(hotels)

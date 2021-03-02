@@ -1,11 +1,6 @@
 require('dotenv').config()
 
-const express = require('express')
-const app = express()
-
-require('./startup/routes')(app) // load route
-require('./startup/db')() // connect to the DB
-require('./startup/config')() // config db
+const app = require('./startup/app')
 
 if (process.env.NODE_ENV === 'production') {
   require('./startup/prod')(app) // load production middleware
