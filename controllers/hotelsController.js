@@ -1,11 +1,21 @@
 const mongoose = require('mongoose')
 const ApiError = require('../helpers/apiError')
 const {
+  getFreeRooms,
   getHotels,
   getHotel,
   getLimitedHotels,
   getHotelsByCity,
 } = require('../services/hotelsService')
+
+exports.getFreeRooms = async (req, res, next) => {
+  try {
+    const freeRooms = await getFreeRooms(req)
+    res.status(200).send(freeRooms)
+  } catch (error) {
+    next(new ApiError(400, 'Free room data can not be fetched.'))
+  }
+}
 
 exports.getHotels = async (req, res, next) => {
   try {

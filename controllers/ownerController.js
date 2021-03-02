@@ -2,12 +2,24 @@ const mongoose = require('mongoose')
 const ApiError = require('../helpers/apiError')
 const { validate } = require('../models/hotel')
 const {
+  addRoom,
   getHotels,
   addHotel,
   updateHotel,
   deleteHotel,
   deleteReservation,
 } = require('../services/ownerService')
+const ApiError = require('../helpers/apiError')
+
+exports.addRoom = async (req, res, next) => {
+  try {
+    const room = await addRoom(req)
+    res.status(200).send(room)
+  } catch (error) {
+    console.log(error)
+    next(new ApiError(400, 'Can not add a room.'))
+  }
+}
 
 exports.getHotels = async (req, res, next) => {
   try {
