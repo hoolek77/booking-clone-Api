@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { Hotel } = require('../models/hotel')
 const { validateRoom } = require('../validations/room')
 const ApiError = require('../helpers/apiError')
 const { Hotel, validate } = require('../models/hotel')

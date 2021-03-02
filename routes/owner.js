@@ -2,7 +2,6 @@ const express = require('express')
 const ownerController = require('../controllers/ownerController')
 const router = express.Router()
 const { isHotelOwner } = require('../middleware/role')
-const ownerController = require('../controllers/ownerController')
 
 router.get('/hotels', async (req, res, next) => {
   ownerController.getHotels(req, res, next)

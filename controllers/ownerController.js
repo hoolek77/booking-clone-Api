@@ -9,7 +9,6 @@ const {
   deleteHotel,
   deleteReservation,
 } = require('../services/ownerService')
-const ApiError = require('../helpers/apiError')
 
 exports.addRoom = async (req, res, next) => {
   try {
