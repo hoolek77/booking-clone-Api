@@ -1,23 +1,19 @@
-const { object } = require('joi')
-const Joi = require('joi')
 const mongoose = require('mongoose')
-Joi.objectId = require('joi-objectid')(Joi)
 
 const reservationSchema = new mongoose.Schema(
   {
-    userId: {
+    user: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    hotelId: {
+    hotel: {
       type: mongoose.Types.ObjectId,
       ref: 'Hotel',
       required: true,
     },
-    roomId: {
+    room: {
       type: mongoose.Types.ObjectId,
-      ref: 'Room',
       required: true,
     },
     startDate: {
@@ -50,23 +46,15 @@ const reservationSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-const Reservation = mongoose.model('Reservation', reservationSchema)
+reservationSchema.methods.toJSON = function () {
+  var obj = this.toObject()
+  delete obj.createdAt
+  delete obj.updatedAt
+  delete obj.__v
 
-const validateReservation = (reservation) => {
-  const schema = Joi.object({
-    userId: Joi.objectId().required(),
-    hotelId: Joi.objectId().required(),
-    roomId: Joi.objectId().required(),
-    startDate: Joi.date().required(),
-    endDate: Joi.date().required(),
-    people: {
-      children: Joi.number().min(0).required(),
-      adults: Joi.number().min(1).required(),
-    },
-  })
-
-  return schema.validate(reservation)
+  return obj
 }
 
-exports.validate = validateReservation
-exports.Reservation = Reservation
+const Reservation = mongoose.model('Reservation', reservationSchema)
+
+module.exports = Reservation

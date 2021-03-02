@@ -1,20 +1,10 @@
 const ApiError = require('../helpers/apiError')
 const { ADMIN_ROLE, HOTEL_OWNER_ROLE, USER_ROLE } = require('../models/roles')
-const User = require('../models/user')
+const getUserFromRequest = require('../helpers/getUserFromRequest')
 
-const findUser = async (userId) => {
-  const user = await User.findById(userId)
-
-  if (!user) {
-    throw new ApiError(404, 'User not found.')
-  }
-
-  return user
-}
-
-const hasUserAccess = async (req, next, role) => {
+const hasUserAccess = (req, next, role) => {
   try {
-    const user = await findUser(req.userId)
+    const user = getUserFromRequest(req)
 
     if (user.role === role) {
       next()
@@ -27,15 +17,15 @@ const hasUserAccess = async (req, next, role) => {
   }
 }
 
-const isAdmin = async (req, res, next) => {
+const isAdmin = (req, res, next) => {
   hasUserAccess(req, next, ADMIN_ROLE)
 }
 
-const isHotelOwner = async (req, res, next) => {
+const isHotelOwner = (req, res, next) => {
   hasUserAccess(req, next, HOTEL_OWNER_ROLE)
 }
 
-const isUser = async (req, res, next) => {
+const isUser = (req, res, next) => {
   hasUserAccess(req, next, USER_ROLE)
 }
 

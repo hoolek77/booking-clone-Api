@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken')
 const config = require('config')
+const { getUser } = require('../services/userService')
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   const token = req.header('X-Auth-Token')
 
   if (!token) {
@@ -15,7 +16,7 @@ const verifyToken = (req, res, next) => {
     const result = jwt.verify(token, secret, options)
 
     if (result) {
-      req.userId = result.userId
+      req.user = await getUser(result.userId)
     }
 
     next()

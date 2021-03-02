@@ -60,3 +60,37 @@ exports.getHotelsByCity = async (city) => {
 
   return hotels
 }
+
+exports.hotelExists = async (hotelId) => {
+  return await Hotel.exists({ _id: hotelId })
+}
+
+exports.roomExists = async (hotelId, roomId) => {
+  return await Hotel.exists({ _id: hotelId, 'rooms._id': roomId })
+}
+
+exports.numberOfGuestsInRoom = async (hotelId, roomId) => {
+  const hotel = await Hotel.findOne({ _id: hotelId, 'rooms._id': roomId })
+
+  if (!hotel) {
+    return 0
+  }
+
+  const room = hotel.rooms.id(roomId)
+
+  return room.beds.single + 2 * room.beds.double
+}
+
+exports.getHotelIdsForOwner = async (hotelOwnerId) => {
+  return await Hotel.find({ ownerId: hotelOwnerId }).distinct('_id')
+}
+
+exports.getHotelOwnerId = async (hotelId) => {
+  const result = await Hotel.findOne({ _id: hotelId }).select('ownerId -_id')
+
+  if (!result) {
+    return null
+  }
+
+  return result.ownerId
+}

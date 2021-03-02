@@ -41,7 +41,7 @@ module.exports = function (app) {
   app.use('/api', limit)
   app.use('/api/reservations', verifyToken, reservations)
   app.use('/api/hotels', hotels)
-  app.use('/api/owner', isHotelOwner, owner)
+  app.use('/api/owner', verifyToken, isHotelOwner, owner)
   app.use('/api/auth', auth)
   app.use('/api/user', verifyToken, user)
   app.use('/api/admin', isAdmin, admin)

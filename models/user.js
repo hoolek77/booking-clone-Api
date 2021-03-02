@@ -1,7 +1,12 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
-const { SUPPORTED_ROLES, USER_ROLE } = require('./roles')
+const {
+  SUPPORTED_ROLES,
+  USER_ROLE,
+  HOTEL_OWNER_ROLE,
+  ADMIN_ROLE,
+} = require('./roles')
 
 const salt = +process.env.BCRYPT_SALT || 10
 
@@ -60,6 +65,18 @@ userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`
 })
 
+userSchema.virtual('isAdmin').get(function () {
+  return this.role === ADMIN_ROLE
+})
+
+userSchema.virtual('isHotelOwner').get(function () {
+  return this.role === HOTEL_OWNER_ROLE
+})
+
+userSchema.virtual('isStandardUser').get(function () {
+  return this.role === USER_ROLE
+})
+
 userSchema.methods.verifyPassword = function (password, callback) {
   bcrypt.compare(password, this.password, function (error, isMatch) {
     if (error) {
@@ -68,6 +85,15 @@ userSchema.methods.verifyPassword = function (password, callback) {
 
     callback(null, isMatch)
   })
+}
+
+userSchema.methods.toJSON = function () {
+  var obj = this.toObject()
+  delete obj.createdAt
+  delete obj.updatedAt
+  delete obj.__v
+
+  return obj
 }
 
 userSchema.pre('save', async function (next) {
