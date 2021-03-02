@@ -7,6 +7,7 @@ const {
   acceptOwnersEmail,
   deleteOwner,
   deleteUser,
+  verifyOwner,
 } = require('../services/adminService')
 
 exports.getUsers = async (req, res, next) => {
@@ -63,5 +64,16 @@ exports.deleteUser = async (req, res, next) => {
     }
 
     next(new ApiError(400, 'User data cannot be fetched'))
+  }
+}
+
+exports.verifyOwner = async (req, res, next) => {
+  try {
+    const user = await verifyOwner(req.params.id)
+    res.status(200)
+  } catch (error) {
+    if (error instanceof mongoose.Error.CastError) {
+      return next(new ApiError(404, 'User not found'))
+    }
   }
 }
