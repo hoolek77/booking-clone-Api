@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const ApiError = require('../helpers/apiError')
-const { getUser } = require('../services/user')
+const { getUser } = require('../services/userService')
 
 exports.getUser = async (req, res, next) => {
   try {

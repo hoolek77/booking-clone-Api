@@ -3,7 +3,7 @@ const router = express.Router()
 const validateCreateUser = require('../middleware/validateCreateUser')
 const validateLoginUser = require('../middleware/validateLoginUser')
 const validateResetPassword = require('../middleware/validateResetPassword')
-const authController = require('../controllers/auth')
+const authController = require('../controllers/authController')
 
 router.post('/register', validateCreateUser, (req, res, next) => {
   authController.register(req, res, next)

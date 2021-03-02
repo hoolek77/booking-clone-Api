@@ -3,7 +3,7 @@ const {
   login,
   requestPasswordReset,
   resetPassword,
-} = require('../services/auth')
+} = require('../services/authService')
 
 const responseWithToken = (res, data) => {
   return res.header('X-Auth-Token', data.token).json(data)
