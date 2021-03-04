@@ -47,7 +47,11 @@ exports.deleteUser = async (email, role) => {
 }
 
 exports.verifyOwner = async (id) => {
-  const user = await User.findOneAndUpdate({ _id: id }, { isVerified: true })
+  const user = await User.findOneAndUpdate(
+    { _id: id },
+    { isVerified: true },
+    { useFindAndModify: false }
+  )
   if (!user) {
     throw new ApiError(400, "I didn't find such a user")
   }

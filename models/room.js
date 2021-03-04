@@ -23,26 +23,23 @@ const roomSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    default: '',
   },
 })
 
-const Room = mongoose.model('Room', roomSchema)
-
 const validateRoom = (room) => {
   const schema = Joi.object({
-    hotelId: Joi.objectId().required(),
+    roomNumber: Joi.string().required(),
     beds: {
-      single: Joi.number.min(0),
-      double: Joi.number.min(0),
+      single: Joi.number().min(0).required(),
+      double: Joi.number().min(0).required(),
     },
-    price: Joi.number.min(10),
+    price: Joi.number().min(10).required(),
     description: Joi.string(),
   })
 
   return schema.validate(room)
 }
 
-exports.validate = validateRoom
-exports.Room = Room
+exports.validateRoom = validateRoom
 exports.roomSchema = roomSchema

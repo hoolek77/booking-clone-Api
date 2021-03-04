@@ -1,10 +1,10 @@
 const Joi = require('joi')
-const { object } = require('joi')
 Joi.objectId = require('joi-objectid')(Joi)
 const mongoose = require('mongoose')
 const JoiPhoneNumer = Joi.extend(require('joi-phone-number'))
 const { roomSchema } = require('./room')
 const { clientRateSchema } = require('./rate')
+const { addressSchema } = require('./address')
 
 const hotelSchema = new mongoose.Schema({
   ownerId: {
@@ -12,48 +12,67 @@ const hotelSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  localization: {
-    type: mongoose.Types.ObjectId,
-    ref: 'Address',
-    required: true,
-  },
-
+  localization: addressSchema,
   phoneNumber: {
-    type: Number,
+    type: String,
     required: true,
   },
   name: {
     type: String,
     required: true,
   },
-  clientsRates: [clientRateSchema],
+  clientsRates: {
+    type: [clientRateSchema],
+    default: [],
+  },
   email: {
     type: String,
     required: true,
   },
   description: {
     type: String,
+    default: '',
+  },
+  rooms: {
+    type: [roomSchema],
     required: true,
   },
-  rooms: [roomSchema],
 })
 
 const Hotel = mongoose.model('Hotel', hotelSchema)
 
+//it will be moved in the next issue
+//----------------------------------------
+const schemaRate = Joi.object({
+  userId: Joi.objectId().required(),
+  desc: Joi.string(),
+  rateNumber: Joi.number().min(1).max(5),
+})
+
+const schemaRoom = Joi.object({
+  roomNumber: Joi.string().required(),
+  beds: {
+    single: Joi.number().min(0).required(),
+    double: Joi.number().min(0).required(),
+  },
+  price: Joi.number().min(10).required(),
+  description: Joi.string(),
+})
+//----------------------------------------
+
 const validateHotel = (hotel) => {
   const schema = Joi.object({
-    ownerId: Joi.objectId(),
-    localization: Joi.objectId(),
-    phoneNumber: JoiPhoneNumer.string().phoneNumber(),
-    name: Joi.string().min(1),
-    clientsRate: Joi.array(),
-    email: Joi.string().email(),
-    description: Joi.string().min(0),
-    rooms: Joi.array(),
+    localization: Joi.object().required(),
+    phoneNumber: JoiPhoneNumer.string().phoneNumber().required(),
+    name: Joi.string().min(1).required(),
+    clientsRate: Joi.array().items(schemaRate),
+    email: Joi.string().email().required(),
+    description: Joi.string(),
+    rooms: Joi.array().min(1).items(schemaRoom).required(),
   })
 
-  return schema.validate(hotel, { allowUnknown: true })
+  return schema.validate(hotel, { allowUnknown: false })
 }
 
-exports.validate = validateHotel
+exports.validateHotel = validateHotel
 exports.Hotel = Hotel

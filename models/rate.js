@@ -23,7 +23,7 @@ const validateRate = (rate) => {
   const schema = Joi.object({
     userId: Joi.ObjectId().required(),
     desc: Joi.string(),
-    rateNumber: Joi.number.min(1).max(5),
+    rateNumber: Joi.number().min(1).max(5),
   })
   return schema.validate(rate)
 }

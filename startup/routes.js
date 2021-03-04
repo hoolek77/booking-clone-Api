@@ -44,7 +44,7 @@ module.exports = function (app) {
   app.use('/api/owner', verifyToken, isHotelOwner, owner)
   app.use('/api/auth', auth)
   app.use('/api/user', verifyToken, user)
-  app.use('/api/admin', isAdmin, admin)
+  app.use('/api/admin', verifyToken, isAdmin, admin)
 
   app.use('*', (req, res, next) => {
     next(new ApiError(404, 'Route is not supported.'), req, res, next)

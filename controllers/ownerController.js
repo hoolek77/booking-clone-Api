@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const ApiError = require('../helpers/apiError')
-const { validate } = require('../models/hotel')
+const { validateHotel } = require('../models/hotel')
+const { validateAddress } = require('../models/address')
+const { validateRoom } = require('../models/room')
 const {
   addRoom,
   getHotels,
@@ -10,19 +12,39 @@ const {
   deleteReservation,
 } = require('../services/ownerService')
 
+const isError = (error) => {
+  if (error) throw new ApiError(400, error.details[0].message)
+}
+
+const JoiValidateHotel = (data) => {
+  const { error } = validateHotel(data)
+  isError(error)
+}
+
+const JoiValidateAdress = (data) => {
+  const { error } = validateAddress(data)
+  isError(error)
+}
+
+const JoiValidateRoom = (data) => {
+  data.forEach((room) => {
+    const { error } = validateRoom(room)
+    isError(error)
+  })
+}
+
 exports.addRoom = async (req, res, next) => {
   try {
     const room = await addRoom(req)
     res.status(200).send(room)
   } catch (error) {
-    console.log(error)
     next(new ApiError(400, 'Can not add a room.'))
   }
 }
 
 exports.getHotels = async (req, res, next) => {
   try {
-    const hotels = await getHotels()
+    const hotels = await getHotels(req.user._id)
     res.status(200).send(hotels)
   } catch (error) {
     next(new ApiError(400, 'Hotel data cannot be fetched.'))
@@ -31,16 +53,20 @@ exports.getHotels = async (req, res, next) => {
 
 exports.addHotel = async (req, res, next) => {
   try {
-    const hotel = addHotel(req.body)
+    JoiValidateHotel(req.body)
+    JoiValidateAdress(req.body.localization)
+    JoiValidateRoom(req.body.rooms)
+    req.body.ownerId = req.user._id
+    const hotel = await addHotel(req.body)
     res.status(200).send(hotel)
   } catch (error) {
-    next(new ApiError(400, 'Hotel data cannot be fetched.'))
+    next(new ApiError(400, error.message))
   }
 }
 
 exports.updateHotel = async (req, res, next) => {
   try {
-    const hotel = updateHotel(req.params.id, req.body)
+    const hotel = await updateHotel(req.params.id, req.body)
     res.status(200).send(hotel)
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
@@ -55,10 +81,13 @@ exports.deleteHotel = async (req, res, next) => {
   try {
     const { forceDelete } = req.query
     const isForceDelete = forceDelete === 'true'
-    const hotels = deleteHotel(req.params.id, isForceDelete)
-    res.status(200).send(hotels)
+    await deleteHotel(req.user._id, req.params.id, isForceDelete)
+    res.sendStatus(200)
   } catch (error) {
-    next(new ApiError(400, 'Hotels data cannot be fetched.'))
+    if (error instanceof mongoose.Error.CastError) {
+      next(new ApiError(404, 'Hotel with given ID does not exist'))
+    }
+    next(new ApiError(error.statusCode, error.message))
   }
 }
 

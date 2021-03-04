@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 const { validateRoom } = require('../validations/room')
 const ApiError = require('../helpers/apiError')
-const { Hotel, validate } = require('../models/hotel')
-const { Reservation } = require('../models/reservation')
+const { Hotel } = require('../models/hotel')
+
+const Reservation = require('../models/reservation')
 const { calculateDays } = require('../helpers/calculateDays')
 
 exports.addRoom = async (req) => {
@@ -28,28 +29,19 @@ exports.addRoom = async (req) => {
   return room
 }
 
-const JoiValidate = (data) => {
-  const { error } = validate(data)
-  if (error) throw new ApiError(400, error.details[0].message)
-}
-
-exports.getHotels = async () => {
-  const hotels = await Hotel.find()
+exports.getHotels = async (data) => {
+  const hotels = await Hotel.find({ ownerId: data })
 
   return hotels
 }
 
 exports.addHotel = async (data) => {
-  JoiValidate(data)
   const hotel = new Hotel(data)
-
   await hotel.save()
-
   return hotel
 }
 
 exports.updateHotel = async (id, data) => {
-  JoiValidate(data)
   const hotel = await Hotel.findByIdAndUpdate(id, data)
 
   if (!hotel) {
@@ -59,25 +51,23 @@ exports.updateHotel = async (id, data) => {
   return hotel
 }
 
-exports.deleteHotel = async (id, isForceDelete) => {
-  const reservation = await Reservation.find({ hotelId: id })
+exports.deleteHotel = async (ownerId, id, isForceDelete) => {
+  const hotel = await Hotel.findById(id)
+  if (hotel.ownerId !== ownerId) throw new ApiError(403, 'Forbidden')
+  const reservation = await Reservation.find({ hotel: id })
 
-  if (reservation.length > 0 && isForceDelete) {
-    await Reservation.deleteMany({ hotelId: id })
-  }
-
-  if (reservation.length > 0) {
-    new ApiError(
+  if (reservation.length > 0 && !isForceDelete) {
+    throw new ApiError(
       400,
       'Remove reservations first or set flag force to true, please'
     )
   }
 
+  if (reservation.length > 0 && isForceDelete) {
+    await Reservation.deleteMany({ hotel: id })
+  }
+
   await Hotel.findByIdAndDelete(id)
-
-  const hotels = await Hotel.find()
-
-  return hotels
 }
 
 exports.deleteReservation = async (id) => {

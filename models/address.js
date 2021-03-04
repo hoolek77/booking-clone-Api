@@ -11,7 +11,7 @@ const adressSchema = new mongoose.Schema({
     required: true,
   },
   zipcode: {
-    type: Number,
+    type: String,
     required: true,
   },
   street: {
@@ -24,19 +24,16 @@ const adressSchema = new mongoose.Schema({
   },
 })
 
-const Address = mongoose.model('Address', adressSchema)
-
 const validateAddress = (address) => {
   const schema = Joi.object({
     country: Joi.string().min(0).required(),
-    city: Joi.string().min(0).required(),
-    zipcode: Joi.number.min(0).required(),
+    city: Joi.string().required(),
+    zipcode: Joi.string().min(0).required(),
     street: Joi.string().min(0).required(),
-    buildingNumber: Joi.number.min(1).required(),
+    buildingNumber: Joi.number().min(1).required(),
   })
 
   return schema.validate(address)
 }
-
-exports.Address = Address
-exports.validate = validateAddress
+exports.addressSchema = adressSchema
+exports.validateAddress = validateAddress
