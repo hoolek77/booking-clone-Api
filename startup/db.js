@@ -12,6 +12,7 @@ module.exports = function () {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
+      useFindAndModify: false,
     })
     .then(() => console.info('Connected to MongoDB...'))
 }
