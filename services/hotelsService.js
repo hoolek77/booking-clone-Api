@@ -33,7 +33,16 @@ exports.getFreeRooms = async (req) => {
   return freeRooms
 }
 
-exports.getHotels = async () => {
+exports.getHotels = async (req) => {
+  if (req.query && req.query.pageNumber && req.query.pageSize) {
+    const { pageNumber, pageSize } = req.query
+
+    const hotels = await Hotel.find()
+      .skip((+pageNumber - 1) * +pageSize)
+      .limit(+pageSize)
+
+    return hotels
+  }
   const hotels = await Hotel.find()
 
   return hotels
