@@ -11,8 +11,8 @@ const {
 
 exports.addRoom = async (req, res, next) => {
   try {
-    const room = await addRoom(req)
-    res.status(200).send(room)
+    const hotel = await addRoom(req)
+    res.status(200).send(hotel)
   } catch (error) {
     next(new ApiError(400, 'Can not add a room.'))
   }
