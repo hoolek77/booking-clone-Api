@@ -5,7 +5,6 @@ const getUserFromRequest = require('../helpers/getUserFromRequest')
 const hasUserAccess = (req, next, role) => {
   try {
     const user = getUserFromRequest(req)
-
     if (user.role === role) {
       next()
       return

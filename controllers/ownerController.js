@@ -1,8 +1,5 @@
 const mongoose = require('mongoose')
 const ApiError = require('../helpers/apiError')
-const { validateHotel } = require('../models/hotel')
-const { validateAddress } = require('../models/address')
-const { validateRoom } = require('../models/room')
 const {
   addRoom,
   getHotels,
@@ -11,27 +8,6 @@ const {
   deleteHotel,
   deleteReservation,
 } = require('../services/ownerService')
-
-const isError = (error) => {
-  if (error) throw new ApiError(400, error.details[0].message)
-}
-
-const JoiValidateHotel = (data) => {
-  const { error } = validateHotel(data)
-  isError(error)
-}
-
-const JoiValidateAdress = (data) => {
-  const { error } = validateAddress(data)
-  isError(error)
-}
-
-const JoiValidateRoom = (data) => {
-  data.forEach((room) => {
-    const { error } = validateRoom(room)
-    isError(error)
-  })
-}
 
 exports.addRoom = async (req, res, next) => {
   try {
@@ -53,9 +29,6 @@ exports.getHotels = async (req, res, next) => {
 
 exports.addHotel = async (req, res, next) => {
   try {
-    JoiValidateHotel(req.body)
-    JoiValidateAdress(req.body.localization)
-    JoiValidateRoom(req.body.rooms)
     req.body.ownerId = req.user._id
     const hotel = await addHotel(req.body)
     res.status(200).send(hotel)

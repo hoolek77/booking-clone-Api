@@ -1,4 +1,3 @@
-const Joi = require('joi')
 const mongoose = require('mongoose')
 
 const rateSchema = new mongoose.Schema({
@@ -17,17 +16,14 @@ const rateSchema = new mongoose.Schema({
   },
 })
 
-const Rate = mongoose.model('Rate', rateSchema)
+rateSchema.methods.toJSON = function () {
+  const obj = this.toObject()
+  delete obj.__v
 
-const validateRate = (rate) => {
-  const schema = Joi.object({
-    userId: Joi.ObjectId().required(),
-    desc: Joi.string(),
-    rateNumber: Joi.number().min(1).max(5),
-  })
-  return schema.validate(rate)
+  return obj
 }
 
-exports.validate = validateRate
+const Rate = mongoose.model('Rate', rateSchema)
+
 exports.Rate = Rate
 exports.clientRateSchema = rateSchema

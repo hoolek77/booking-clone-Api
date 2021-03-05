@@ -1,7 +1,4 @@
-const Joi = require('joi')
-Joi.objectId = require('joi-objectid')(Joi)
 const mongoose = require('mongoose')
-const JoiPhoneNumer = Joi.extend(require('joi-phone-number'))
 const { roomSchema } = require('./room')
 const { clientRateSchema } = require('./rate')
 const { addressSchema } = require('./address')
@@ -39,40 +36,13 @@ const hotelSchema = new mongoose.Schema({
   },
 })
 
-const Hotel = mongoose.model('Hotel', hotelSchema)
+hotelSchema.methods.toJSON = function () {
+  const obj = this.toObject()
+  delete obj.__v
 
-//it will be moved in the next issue
-//----------------------------------------
-const schemaRate = Joi.object({
-  userId: Joi.objectId().required(),
-  desc: Joi.string(),
-  rateNumber: Joi.number().min(1).max(5),
-})
-
-const schemaRoom = Joi.object({
-  roomNumber: Joi.string().required(),
-  beds: {
-    single: Joi.number().min(0).required(),
-    double: Joi.number().min(0).required(),
-  },
-  price: Joi.number().min(10).required(),
-  description: Joi.string(),
-})
-//----------------------------------------
-
-const validateHotel = (hotel) => {
-  const schema = Joi.object({
-    localization: Joi.object().required(),
-    phoneNumber: JoiPhoneNumer.string().phoneNumber().required(),
-    name: Joi.string().min(1).required(),
-    clientsRate: Joi.array().items(schemaRate),
-    email: Joi.string().email().required(),
-    description: Joi.string(),
-    rooms: Joi.array().min(1).items(schemaRoom).required(),
-  })
-
-  return schema.validate(hotel, { allowUnknown: false })
+  return obj
 }
 
-exports.validateHotel = validateHotel
+const Hotel = mongoose.model('Hotel', hotelSchema)
+
 exports.Hotel = Hotel
