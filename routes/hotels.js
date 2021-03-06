@@ -19,7 +19,7 @@ router.get('/getHotelById/:hotelId', async (req, res, next) => {
 })
 
 // get hotel by city name
-router.get('/getHotelByCity/:city', async (req, res, next) => {
+router.get('/getHotelsByCity/:city', async (req, res, next) => {
   hotelController.getHotelsByCity(req, res, next)
 })
 
