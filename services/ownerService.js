@@ -3,11 +3,12 @@ const { Hotel } = require('../models/hotel')
 
 const Reservation = require('../models/reservation')
 const { calculateDays } = require('../helpers/calculateDays')
+const { isObjIdEqualToMongoId } = require('../helpers/isObjIdEqualToMongoId')
 
 exports.addRoom = async (req) => {
   let hotel = await Hotel.findOne({ _id: req.params.hotelId })
-  if (!hotel) throw new ApiError(404, 'Hotel with provided ID was not found.')
-  if (hotel.ownerId !== req.user._id) throw new ApiError(403, 'Forbidden')
+  if (!hotel) throw new ApiError(404, 'Hotel with provided ID was not found.')  
+  if (!isObjIdEqualToMongoId(req.user._id, hotel.ownerId)) throw new ApiError(403, 'Forbidden')
 
   const rooms = req.body.map((item) => ({
     roomNumber: item.roomNumber,

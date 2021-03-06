@@ -1,13 +1,19 @@
-const ApiError = require('../helpers/apiError')
 const { Hotel } = require('../models/hotel')
-const { Reservation } = require('../models/reservation')
+const Reservation = require('../models/reservation')
+
+const ApiError = require('../helpers/apiError')
+const { formatDate } = require('../helpers/date')
 
 exports.getFreeRooms = async (req) => {
   if (!req.query.startDate || !req.query.endDate)
     throw new ApiError(400, 'Provide start date and end date.')
 
   const { hotelId } = req.params
-  const { startDate, endDate } = req.query
+
+  let { startDate, endDate } = req.query
+
+  startDate = formatDate(startDate, true)
+  endDate = formatDate(endDate, true)
 
   const hotel = await Hotel.findById(hotelId)
   if (!hotel) throw new ApiError(404, 'Hotel not found')

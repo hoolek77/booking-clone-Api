@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const Reservation = require('../models/reservation')
 const { Address } = require('../models/address')
 const {
@@ -8,8 +7,9 @@ const {
   getHotelIdsForOwner,
   getHotelOwnerId,
 } = require('./hotelsService')
-const { addDaysToDate } = require('../helpers/date')
+const { addDaysToDate, formatDate } = require('../helpers/date')
 const ApiError = require('../helpers/apiError')
+const { isObjIdEqualToMongoId } = require('../helpers/isObjIdEqualToMongoId')
 
 const CANCELLATION_DATE = 3
 
@@ -18,8 +18,21 @@ const isRoomAvailable = async (hotelId, roomId, startDate, endDate) => {
     hotel: hotelId,
     room: roomId,
     $or: [
-      { startDate: { $gte: startDate, $lt: endDate } },
-      { endDate: { $gt: startDate, $lte: endDate } },
+      // start after startDate and after before endDate --- |
+      { 
+        startDate: { $lt: startDate, $lt: endDate },
+        endDate: { $gt: startDate, $lt: endDate }
+      },
+      // between some reservation time
+      { 
+        startDate: { $lte: startDate, $lte: endDate },
+        endDate: { $gte: startDate, $gte: endDate }
+      },
+      // start before startDate and end before endDate | ---
+      {
+        startDate: { $gt: startDate, $lt: endDate },
+        endDate: { $gt: startDate, $lt: endDate }
+      },
     ],
   }))
 }
@@ -136,7 +149,7 @@ const getReservations = async (user) => {
 
 const saveReservation = async (user, data) => {
   if (user.isStandardUser) {
-    if (!user._id.equals(mongoose.Types.ObjectId(data.user))) {
+    if (!isObjIdEqualToMongoId(user._id, data.user)) {
       throw new ApiError(403, 'You are not allowed to create a reservation.')
     }
   } else {
@@ -144,6 +157,9 @@ const saveReservation = async (user, data) => {
   }
 
   const defaultErrorMessage = 'Reservation failed.'
+
+  data.startDate = formatDate(data.startDate, true)
+  data.endDate = formatDate(data.endDate, true)
 
   const { hotel, room, people, startDate, endDate } = data
 
@@ -180,7 +196,7 @@ const cancelReservation = async (user, reservationId) => {
   }
 
   if (user.isStandardUser) {
-    if (!user._id.equals(mongoose.Types.ObjectId(reservation.user))) {
+    if (!isObjIdEqualToMongoId(user._id, reservation.user)) {
       throw new ApiError(403, 'You are not allowed to cancel this reservation.')
     }
   } else if (user.isHotelOwner) {
@@ -190,7 +206,7 @@ const cancelReservation = async (user, reservationId) => {
       throw new ApiError(400, 'An error occurred while cancelling reservation.')
     }
 
-    if (!user._id.equals(mongoose.Types.ObjectId(hotelOwnerId))) {
+    if (!isObjIdEqualToMongoId(user._id, hotelOwnerId)) {
       throw new ApiError(403, 'You are not allowed to cancel this reservation.')
     }
   } else {
