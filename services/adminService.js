@@ -5,7 +5,7 @@ const { Hotel } = require('../models/hotel')
 const { HOTEL_OWNER_ROLE, USER_ROLE } = require('../models/roles')
 
 exports.getUsers = async (userRole, hotelOwnerRole) => {
-  const users = await User.find({ role: { $in: [ userRole, hotelOwnerRole ] } })
+  const users = await User.find({ role: { $in: [userRole, hotelOwnerRole] } })
 
   return users
 }
@@ -19,7 +19,9 @@ exports.getHotelOwners = async () => {
 exports.acceptUserToOwner = async (id) => {
   const user = await User.updateOne({ _id: id }, { role: HOTEL_OWNER_ROLE })
 
+  if (!user) {
     throw new ApiError(404, 'User not found')
+  }
 
   return user
 }
@@ -33,8 +35,6 @@ exports.deleteOwner = async (id) => {
   if (!user) {
     throw new ApiError(404, 'Hotel owner with provided id not found')
   }
-
-  return user
 }
 
 exports.deleteUser = async (id) => {
@@ -82,7 +82,10 @@ exports.deleteHotel = async (hotelId, isForceDelete) => {
 }
 
 exports.verifyOwner = async (id) => {
-  const user = await User.findOneAndUpdate({ _id: id, role: HOTEL_OWNER_ROLE }, { isVerified: true })
+  const user = await User.findOneAndUpdate(
+    { _id: id, role: HOTEL_OWNER_ROLE },
+    { isVerified: true }
+  )
   if (!user) {
     throw new ApiError(404, 'Hotel owner not found')
   }

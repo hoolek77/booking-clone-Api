@@ -44,7 +44,7 @@ exports.acceptUserToOwner = async (req, res, next) => {
 
 exports.deleteOwner = async (req, res, next) => {
   try {
-    const owner = await deleteOwner(req.params.id)
+    await deleteOwner(req.params.id)
     res.sendStatus(200)
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
@@ -70,7 +70,7 @@ exports.deleteUsers = async (req, res, next) => {
   try {
     const { forceDelete } = req.query
     const isForceDelete = forceDelete === 'true'
-    const users = await deleteUsers(req.body, isForceDelete)
+    await deleteUsers(req.body, isForceDelete)
     res.sendStatus(200)
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
@@ -84,8 +84,8 @@ exports.deleteHotel = async (req, res, next) => {
   try {
     const { forceDelete } = req.query
     const isForceDelete = forceDelete === 'true'
-    const hotel = await deleteHotel(req.params.id, isForceDelete)
-    res.status(200).send(hotel)
+    await deleteHotel(req.params.id, isForceDelete)
+    res.sendStatus(200)
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       return next(new ApiError(404, 'Hotel not found'))
@@ -96,7 +96,7 @@ exports.deleteHotel = async (req, res, next) => {
 
 exports.verifyOwner = async (req, res, next) => {
   try {
-    const user = await verifyOwner(req.params.id)
+    await verifyOwner(req.params.id)
     res.sendStatus(200)
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
