@@ -109,21 +109,3 @@ exports.deleteHotel = async (owner, id, isForceDelete) => {
     `You removed your hotel: ${hotel.name}`
   )
 }
-
-exports.deleteReservation = async (id) => {
-  const reservation = await Reservation.findByIdAndDelete(id)
-  if (!reservation) {
-    throw new ApiError(404, 'Reservation with given ID was not found')
-  }
-
-  const days = calculateDays(reservation.startDay)
-
-  if (reservation.isPaid || days <= 3) {
-    throw new ApiError(
-      400,
-      'Can not delete reservation; reservation is paid or or there is less than 3 days to start the stay in the hotel'
-    )
-  }
-
-  return reservation
-}

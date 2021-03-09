@@ -63,16 +63,3 @@ exports.deleteHotel = async (req, res, next) => {
     next(new ApiError(error.statusCode, error.message))
   }
 }
-
-exports.deleteReservation = async (req, res, next) => {
-  try {
-    deleteReservation(req.params.id)
-    res.sendStatus(200)
-  } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return next(new ApiError(404, 'Reservation not found.'))
-    }
-
-    next(new ApiError(400, 'Reservation data cannot be fetched.'))
-  }
-}
