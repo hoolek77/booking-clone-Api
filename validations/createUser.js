@@ -18,6 +18,7 @@ module.exports = function validateCreateUser(data) {
       .label('Phone number'),
     tin: Joi.number().label('Tax identification number'),
     role: Joi.string().valid(USER_ROLE, HOTEL_OWNER_ROLE).label('User role'),
+    isSmsAllowed: Joi.boolean().required(),
   }).with('password', 'repeatPassword')
 
   return validateData(data, schema)

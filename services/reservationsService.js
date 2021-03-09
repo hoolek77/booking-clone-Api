@@ -7,9 +7,11 @@ const {
   getHotelIdsForOwner,
   getHotelOwnerId,
 } = require('./hotelsService')
+const { Hotel } = require('../models/hotel')
 const { addDaysToDate, formatDate } = require('../helpers/date')
 const ApiError = require('../helpers/apiError')
 const { isObjIdEqualToMongoId } = require('../helpers/isObjIdEqualToMongoId')
+const { notifyUser } = require('./notifyUser')
 
 const CANCELLATION_DATE = 3
 
@@ -19,19 +21,19 @@ const isRoomAvailable = async (hotelId, roomId, startDate, endDate) => {
     room: roomId,
     $or: [
       // start after startDate and after before endDate --- |
-      { 
+      {
         startDate: { $lt: startDate, $lt: endDate },
-        endDate: { $gt: startDate, $lt: endDate }
+        endDate: { $gt: startDate, $lt: endDate },
       },
       // between some reservation time
-      { 
+      {
         startDate: { $lte: startDate, $lte: endDate },
-        endDate: { $gte: startDate, $gte: endDate }
+        endDate: { $gte: startDate, $gte: endDate },
       },
       // start before startDate and end before endDate | ---
       {
         startDate: { $gt: startDate, $lt: endDate },
-        endDate: { $gt: startDate, $lt: endDate }
+        endDate: { $gt: startDate, $lt: endDate },
       },
     ],
   }))
@@ -185,6 +187,18 @@ const saveReservation = async (user, data) => {
   const reservation = new Reservation(data)
   await reservation.save()
 
+  notifyUser(
+    user.isSmsAllowed,
+    user.email,
+    'Reservation booked',
+    'reservation',
+    user.firstName,
+    hotel.name,
+    'BookingCloneApi',
+    user.phoneNumber,
+    `You successfully booked your reservation at: ${hotel.name}`
+  )
+
   return true
 }
 
@@ -218,6 +232,20 @@ const cancelReservation = async (user, reservationId) => {
   }
 
   const deletedReservation = await reservation.delete()
+
+  const hotel = await Hotel.findById(reservation.hotel)
+
+  notifyUser(
+    user.isSmsAllowed,
+    user.email,
+    'Cancelled reservation',
+    'reservationRemoved',
+    user.firstName,
+    hotel.name,
+    'BookingCloneApi',
+    user.phoneNumber,
+    'Your reservation has been cancelled'
+  )
 
   return deletedReservation !== null
 }

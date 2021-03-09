@@ -5,6 +5,7 @@ const config = require('config')
 const User = require('../models/user')
 const Token = require('../models/token')
 const ApiError = require('../helpers/apiError')
+const { notifyUser } = require('./notifyUser')
 
 const salt = +process.env.BCRYPT_SALT || 10
 
@@ -30,6 +31,17 @@ const register = async (data) => {
   user = new User(data)
   await user.save()
 
+  notifyUser(
+    user.isSmsAllowed,
+    user.email,
+    'Welcome to BookingCloneApi',
+    'reg',
+    user.firstName,
+    null,
+    'BookingCloneApi',
+    user.phoneNumber,
+    'You successfuly registered to BookingCloneApi'
+  )
   return {
     userId: user._id,
     token: createToken(user),
