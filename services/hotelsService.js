@@ -43,11 +43,12 @@ exports.getHotels = async (req) => {
   if (req.query && req.query.pageNumber && req.query.pageSize) {
     const { pageNumber, pageSize } = req.query
 
+    const hotelsLength = await Hotel.count()
     const hotels = await Hotel.find()
       .skip((+pageNumber - 1) * +pageSize)
       .limit(+pageSize)
 
-    return hotels
+    return { hotels, pages: Math.round(hotelsLength / pageSize) }
   }
   const hotels = await Hotel.find()
 
