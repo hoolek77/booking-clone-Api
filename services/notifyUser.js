@@ -8,7 +8,6 @@ function notifyUser(
     templateView,
   },
   smsData = {
-    from = "BookingCloneApi",
     smsMsg
   }
 ) {

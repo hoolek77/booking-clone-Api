@@ -9,11 +9,11 @@ const nexmo = new Nexmo({
   apiSecret: smsApiSecret,
 })
 
-const sendSms = ({ from, smsMsg }, number) => {
-  nexmo.message.sendSms(from, number, smsMsg)
+const sendSms = ({ smsMsg }, phoneNumber) => {
+  nexmo.message.sendSms("BookingCloneApi", phoneNumber, smsMsg)
 }
 
-//number format - 48111222333
+//phone number format - 48111222333
 
 module.exports = {
   sendSms: sendSms,
