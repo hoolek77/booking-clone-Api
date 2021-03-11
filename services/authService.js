@@ -36,15 +36,14 @@ const register = async (data) => {
   await user.save()
 
   notifyUser(
-    user.isSmsAllowed,
-    user.email,
-    'Welcome to BookingCloneApi',
-    'reg',
-    `${user.firstName} ${user.lastName}`,
-    null,
-    'BookingCloneApi',
-    user.phoneNumber,
-    'You successfuly registered to BookingCloneApi'
+    user,
+    {
+      emailSubject: 'Welcome to BookingCloneApi',
+      templateView: 'reg.html',
+    },
+    {
+      smsMsg: 'You successfuly registered to BookingCloneApi'
+    }
   )
 
   return {

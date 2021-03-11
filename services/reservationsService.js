@@ -137,7 +137,10 @@ const saveReservation = async (user, data) => {
   data.startDate = formatDate(data.startDate, true)
   data.endDate = formatDate(data.endDate, true)
 
-  const { hotel, room, people, startDate, endDate } = data
+  const { room, people, startDate, endDate } = data
+  const hotelId = data.hotel
+
+  const hotel = await Hotel.findById(hotelId)
 
   if (!(await hotelExists(hotel))) {
     throw new BadRequestError('Hotel does not exist.')
@@ -162,15 +165,15 @@ const saveReservation = async (user, data) => {
   await reservation.save()
 
   notifyUser(
-    user.isSmsAllowed,
-    user.email,
-    'Reservation booked',
-    'reservation',
-    `${user.firstName} ${user.lastName}`,
-    hotel.name,
-    'BookingCloneApi',
-    user.phoneNumber,
-    `You successfully booked your reservation at: ${hotel.name}`
+    user,
+    {
+      emailSubject: 'Reservation booked',
+      templateView: 'reservation.html',
+      hotelName: hotel.name,
+    },
+    {
+      smsMsg: `You successfully booked your reservation at: ${hotel.name}`,
+    }
   )
 
   return true
@@ -214,15 +217,15 @@ const cancelReservation = async (user, reservationId) => {
   const hotel = await Hotel.findById(reservation.hotel)
 
   notifyUser(
-    user.isSmsAllowed,
-    user.email,
-    'Cancelled reservation',
-    'reservationRemoved',
-    `${user.firstName} ${user.lastName}`,
-    hotel.name,
-    'BookingCloneApi',
-    user.phoneNumber,
-    'Your reservation has been cancelled'
+    user,
+    {
+      emailSubject: 'Cancelled reservation',
+      templateView: 'reservationRemoved.html',
+      hotelName: hotel.name,
+    },
+    {
+      smsMsg: 'Your reservation has been cancelled'
+    }
   )
 
   return deletedReservation !== null

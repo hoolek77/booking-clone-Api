@@ -2,20 +2,21 @@ const { sendSms } = require('./sms/index')
 const { sendMail } = require('./email/index')
 
 function notifyUser(
-  isSmsAllowed,
-  userEmail,
-  subjectEmail,
-  viewEmail,
-  userName,
-  hotelName,
-  from,
-  number,
-  textSms
+  user,
+  emailData = {
+    emailSubject,
+    templateView,
+  },
+  smsData = {
+    from = "BookingCloneApi",
+    smsMsg
+  }
 ) {
+  const { isSmsAllowed, email, phoneNumber } = user
   try {
-    sendMail(userEmail, subjectEmail, viewEmail, userName, hotelName)
+    sendMail(emailData, email, user.fullName)
     if (isSmsAllowed) {
-      sendSms(from, number, textSms)
+      sendSms(smsData, phoneNumber)
     }
   } catch (error) {
     console.error(error)

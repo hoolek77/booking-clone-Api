@@ -68,15 +68,14 @@ exports.deleteUsers = async (users, isForceDelete) => {
       uniqueUsers.forEach(async (uniqueUser) => {
         const user = await User.findById(uniqueUser)
         notifyUser(
-          user.isSmsAllowed,
-          user.email,
-          'Account Deleted',
-          'userDeletedAndReservationsCanceled',
-          `${user.firstName} ${user.lastName}`,
-          null,
-          'BookingCloneApi',
-          user.phoneNumber,
-          'Your account has been deleted by admin, your reservations has been cancelled'
+          user,
+          {
+            emailSubject: 'Account Deleted',
+            templateView: 'userDeletedAndReservationsCanceled.html'
+          },
+          {
+            smsMsg: 'Your account has been deleted by admin, your reservations has been cancelled'
+          }
         )
       })
       await Reservation.deleteMany({ user: id })
@@ -88,15 +87,14 @@ exports.deleteUsers = async (users, isForceDelete) => {
     }
     await User.findByIdAndDelete(id)
     notifyUser(
-      user.isSmsAllowed,
-      user.email,
-      'Account Deleted',
-      'remove',
-      `${user.firstName} ${user.lastName}`,
-      null,
-      'BookingCloneApi',
-      user.phoneNumber,
-      'Your account has been deleted by admin'
+      user,
+      {
+        emailSubject: 'Account Deleted',
+        templateView: 'remove.html',
+      },
+      {
+        smsMsg: 'Your account has been deleted by admin'
+      }
     )
   }
 }
@@ -113,15 +111,15 @@ exports.deleteHotel = async (hotelId, isForceDelete) => {
     reservations.forEach(async ({ user, hotel }) => {
       const { name } = await Hotel.findById(hotel)
       notifyUser(
-        user.isSmsAllowed,
-        user.email,
-        'Cancelled reservation',
-        'reservationRemoved',
-        `${user.firstName} ${user.lastName}`,
-        name,
-        'BookingCloneApi',
-        user.phoneNumber,
-        'Your reservation has been cancelled'
+        user,
+        {
+          emailSubject: 'Cancelled reservation',
+          templateView: 'reservationRemoved.html',
+          hotelName: name,
+        },
+        {
+          smsMsg: 'Your reservation has been cancelled'
+        }
       )
     })
   }
@@ -141,15 +139,14 @@ exports.verifyOwner = async (id) => {
   }
 
   notifyUser(
-    user.isSmsAllowed,
-    user.email,
-    'Veryfication successful',
-    'owner',
-    `${user.firstName} ${user.lastName}`,
-    null,
-    'BookingCloneApi',
-    user.phoneNumber,
-    'You are now veryfied as a Hotel Owner. Your hotels are now available'
+    user,
+    {
+      emailSubject: 'Veryfication successful',
+      templateView: 'owner.html',
+    },
+    {
+      smsMsg: 'You are now veryfied as a Hotel Owner. Your hotels are now available'
+    }
   )
   return user
 }

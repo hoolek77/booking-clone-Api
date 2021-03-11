@@ -9,8 +9,8 @@ const nexmo = new Nexmo({
   apiSecret: smsApiSecret,
 })
 
-const sendSms = (from, number, text) => {
-  nexmo.message.sendSms(from, number, text)
+const sendSms = ({ from, smsMsg }, number) => {
+  nexmo.message.sendSms(from, number, smsMsg)
 }
 
 //number format - 48111222333
