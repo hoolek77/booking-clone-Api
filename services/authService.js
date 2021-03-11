@@ -4,7 +4,11 @@ const crypto = require('crypto')
 const config = require('config')
 const User = require('../models/user')
 const Token = require('../models/token')
-const ApiError = require('../helpers/apiError')
+const {
+  ConflictError,
+  UnauthorizedError,
+  BadRequestError,
+} = require('../helpers/apiError')
 const { notifyUser } = require('./notifyUser')
 
 const salt = +process.env.BCRYPT_SALT || 10
@@ -25,7 +29,7 @@ const register = async (data) => {
   let user = await User.findOne({ email: data.email })
 
   if (user) {
-    throw new ApiError(400, 'Account with this email address already exists.')
+    throw new ConflictError('Account with this email address already exists.')
   }
 
   user = new User(data)
@@ -42,6 +46,7 @@ const register = async (data) => {
     user.phoneNumber,
     'You successfuly registered to BookingCloneApi'
   )
+
   return {
     userId: user._id,
     token: createToken(user),
@@ -52,13 +57,13 @@ const login = async (data) => {
   const user = await User.findOne({ email: data.email })
 
   if (!user) {
-    throw new ApiError(400, 'Email or password is wrong.')
+    throw new UnauthorizedError('Email or password is wrong.')
   }
 
   const validPassword = await bcrypt.compare(data.password, user.password)
 
   if (!validPassword) {
-    throw new ApiError(400, 'Email or password is wrong.')
+    throw new UnauthorizedError('Email or password is wrong.')
   }
 
   return {
@@ -71,7 +76,7 @@ const requestPasswordReset = async (email) => {
   const user = await User.findOne({ email })
 
   if (!user) {
-    throw new ApiError(404, 'User does not exist.')
+    throw new BadRequestError('User does not exist.')
   }
 
   let token = await Token.findOne({ userId: user._id })
@@ -92,7 +97,7 @@ const requestPasswordReset = async (email) => {
   const clientUrl = config.get('clientUrl')
   const link = `${clientUrl}/passwordReset?token=${resetToken}&id=${user._id}`
 
-  // send email to user with the link
+  // TODO: send email to user with the link
 
   return true
 }
@@ -101,13 +106,13 @@ const resetPassword = async (userId, token, password) => {
   let passwordResetToken = await Token.findOne({ userId })
 
   if (!passwordResetToken) {
-    throw new ApiError(400, 'Invalid or expired password reset token.')
+    throw new BadRequestError('Invalid or expired password reset token.')
   }
 
   const isValid = await bcrypt.compare(token, passwordResetToken.token)
 
   if (!isValid) {
-    throw new ApiError(400, 'Invalid or expired password reset token.')
+    throw new BadRequestError('Invalid or expired password reset token.')
   }
 
   const hash = await bcrypt.hash(password, Number(salt))
@@ -120,7 +125,7 @@ const resetPassword = async (userId, token, password) => {
 
   const user = await User.findById({ _id: userId })
 
-  // send email to user that password was reseted
+  // TODO: send email to user that password was reseted
 
   await passwordResetToken.deleteOne()
 

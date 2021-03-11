@@ -1,17 +1,16 @@
-const ApiError = require('../helpers/apiError')
+const { BadRequestError, ForbiddenError } = require('../helpers/apiError')
 const { Hotel } = require('../models/hotel')
 const User = require('../models/user')
 
 const Reservation = require('../models/reservation')
-const { calculateDays } = require('../helpers/calculateDays')
 const { isObjIdEqualToMongoId } = require('../helpers/isObjIdEqualToMongoId')
 const { notifyUser } = require('./notifyUser')
 
 exports.addRoom = async (req) => {
   let hotel = await Hotel.findOne({ _id: req.params.hotelId })
-  if (!hotel) throw new ApiError(404, 'Hotel with provided ID was not found.')
+  if (!hotel) throw new BadRequestError('Hotel with provided ID was not found.')
   if (!isObjIdEqualToMongoId(req.user._id, hotel.ownerId))
-    throw new ApiError(403, 'Forbidden')
+    throw new ForbiddenError('Forbidden')
 
   const rooms = req.body.map((item) => ({
     roomNumber: item.roomNumber,
@@ -48,7 +47,7 @@ exports.updateHotel = async (id, data) => {
   const hotelUpdate = await Hotel.findByIdAndUpdate(id, data)
 
   if (!hotelUpdate) {
-    throw new ApiError(404, 'Hotel not found.')
+    throw new BadRequestError('Hotel not found.')
   }
   const hotel = await Hotel.findById(id)
 
@@ -59,14 +58,13 @@ exports.deleteHotel = async (owner, id, isForceDelete) => {
   const hotel = await Hotel.findById(id)
 
   if (!isObjIdEqualToMongoId(hotel.ownerId, owner._id)) {
-    throw new ApiError(403, 'Forbidden')
+    throw new ForbiddenError('Forbidden')
   }
   const reservations = await Reservation.find({ hotel: id })
 
   if (reservations.length > 0 && !isForceDelete) {
-    throw new ApiError(
-      400,
-      'Remove reservations first or set flag force to true, please'
+    throw new BadRequestError(
+      'Remove reservations first or check `force delete` flag'
     )
   }
 

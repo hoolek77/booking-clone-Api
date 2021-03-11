@@ -1,5 +1,3 @@
-const mongoose = require('mongoose')
-const ApiError = require('../helpers/apiError')
 const { HOTEL_OWNER_ROLE, USER_ROLE } = require('../models/roles')
 const {
   getUsers,
@@ -17,7 +15,7 @@ exports.getUsers = async (req, res, next) => {
     const users = await getUsers(USER_ROLE, HOTEL_OWNER_ROLE)
     res.status(200).send(users)
   } catch (error) {
-    next(new ApiError(400, 'Users data cannot be fetched.'))
+    next(error)
   }
 }
 
@@ -26,7 +24,7 @@ exports.getHotelOwners = async (req, res, next) => {
     const owners = await getHotelOwners()
     res.status(200).send(owners)
   } catch (error) {
-    next(new ApiError(400, 'Owners data cannot be fetched.'))
+    next(error)
   }
 }
 
@@ -35,10 +33,7 @@ exports.acceptUserToOwner = async (req, res, next) => {
     await acceptUserToOwner(req.params.id)
     res.sendStatus(200)
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return next(new ApiError(400, 'User not found'))
-    }
-    next(new ApiError(error.statusCode, error.message))
+    next(error)
   }
 }
 
@@ -47,10 +42,7 @@ exports.deleteOwner = async (req, res, next) => {
     await deleteOwner(req.params.id)
     res.sendStatus(200)
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return next(new ApiError(400, 'User not found'))
-    }
-    next(new ApiError(error.statusCode, error.message))
+    next(error)
   }
 }
 
@@ -59,10 +51,7 @@ exports.deleteUser = async (req, res, next) => {
     const user = await deleteUser(req.params.id)
     res.sendStatus(200)
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return next(new ApiError(404, 'User not found'))
-    }
-    next(new ApiError(error.statusCode, error.message))
+    next(error)
   }
 }
 
@@ -73,10 +62,7 @@ exports.deleteUsers = async (req, res, next) => {
     await deleteUsers(req.body, isForceDelete)
     res.sendStatus(200)
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return next(new ApiError(404, 'User not found'))
-    }
-    next(new ApiError(error.statusCode, error.message))
+    next(error)
   }
 }
 
@@ -87,10 +73,7 @@ exports.deleteHotel = async (req, res, next) => {
     await deleteHotel(req.params.id, isForceDelete)
     res.sendStatus(200)
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return next(new ApiError(404, 'Hotel not found'))
-    }
-    next(new ApiError(error.statusCode, error.message))
+    next(error)
   }
 }
 
@@ -99,9 +82,6 @@ exports.verifyOwner = async (req, res, next) => {
     await verifyOwner(req.params.id)
     res.sendStatus(200)
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      return next(new ApiError(404, 'User not found'))
-    }
-    next(new ApiError(error.statusCode, error.message))
+    next(error)
   }
 }

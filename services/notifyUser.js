@@ -12,9 +12,13 @@ function notifyUser(
   number,
   textSms
 ) {
-  sendMail(userEmail, subjectEmail, viewEmail, userName, hotelName)
-  if (isSmsAllowed) {
-    sendSms(from, number, textSms)
+  try {
+    sendMail(userEmail, subjectEmail, viewEmail, userName, hotelName)
+    if (isSmsAllowed) {
+      sendSms(from, number, textSms)
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
 

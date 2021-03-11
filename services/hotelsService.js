@@ -1,12 +1,12 @@
 const { Hotel } = require('../models/hotel')
 const Reservation = require('../models/reservation')
 
-const ApiError = require('../helpers/apiError')
+const { BadRequestError, NotFoundError } = require('../helpers/apiError')
 const { formatDate } = require('../helpers/date')
 
 exports.getFreeRooms = async (req) => {
   if (!req.query.startDate || !req.query.endDate)
-    throw new ApiError(400, 'Provide start date and end date.')
+    throw new BadRequestError('Provide start date and end date.')
 
   const { hotelId } = req.params
 
@@ -16,7 +16,7 @@ exports.getFreeRooms = async (req) => {
   endDate = formatDate(endDate, true)
 
   const hotel = await Hotel.findById(hotelId)
-  if (!hotel) throw new ApiError(404, 'Hotel not found')
+  if (!hotel) throw new BadRequestError('Hotel not found')
 
   const freeRooms = []
   const rooms = hotel.rooms
@@ -59,7 +59,7 @@ exports.getHotel = async (hotelId) => {
   const hotel = await Hotel.findById(hotelId)
 
   if (!hotel) {
-    throw new ApiError(404, 'Hotel not found')
+    throw new NotFoundError('Hotel not found')
   }
 
   return hotel

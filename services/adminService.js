@@ -1,4 +1,4 @@
-const ApiError = require('../helpers/apiError')
+const { BadRequestError } = require('../helpers/apiError')
 const User = require('../models/user')
 const Reservation = require('../models/reservation')
 const { Hotel } = require('../models/hotel')
@@ -23,7 +23,7 @@ exports.acceptUserToOwner = async (id) => {
     { role: HOTEL_OWNER_ROLE }
   )
   if (!user) {
-    throw new ApiError(404, 'User not found')
+    throw new BadRequestError('User not found')
   }
 
   return user
@@ -36,7 +36,7 @@ exports.deleteOwner = async (id) => {
   })
 
   if (!user) {
-    throw new ApiError(404, 'Hotel owner with provided id not found')
+    throw new BadRequestError('Hotel owner with provided id not found')
   }
 }
 
@@ -46,7 +46,7 @@ exports.deleteUser = async (id) => {
     role: USER_ROLE,
   })
   if (!user) {
-    throw new ApiError(404, 'User not found')
+    throw new BadRequestError('User not found')
   }
 }
 
@@ -54,7 +54,7 @@ exports.deleteUsers = async (users, isForceDelete) => {
   for (const id of users) {
     const user = await User.findById(id)
     if (!user) {
-      throw new ApiError(404, 'User not found')
+      throw new BadRequestError('User not found')
     }
     const reservations = await Reservation.find({ user: id })
     if (reservations.length > 0 && isForceDelete) {
@@ -84,7 +84,7 @@ exports.deleteUsers = async (users, isForceDelete) => {
       return
     }
     if (reservations.length > 0 && !isForceDelete) {
-      throw new ApiError(400, 'Remove reservations first')
+      throw new BadRequestError('Remove reservations first')
     }
     await User.findByIdAndDelete(id)
     notifyUser(
@@ -105,7 +105,7 @@ exports.deleteHotel = async (hotelId, isForceDelete) => {
   const reservations = await Reservation.find({ hotel: hotelId })
   const hotel = await Hotel.findById(hotelId)
   if (!hotel) {
-    throw new ApiError(404, 'Hotel not found')
+    throw new BadRequestError('Hotel not found')
   }
   if (reservations.length > 0 && isForceDelete) {
     await Reservation.deleteMany({ hotel: hotelId })
@@ -126,7 +126,7 @@ exports.deleteHotel = async (hotelId, isForceDelete) => {
     })
   }
   if (reservations.length > 0 && !isForceDelete) {
-    throw new ApiError(400, 'Remove reservation first')
+    throw new BadRequestError('Remove reservation first')
   }
   await Hotel.findByIdAndDelete(hotelId)
 }
@@ -137,7 +137,7 @@ exports.verifyOwner = async (id) => {
     { isVerified: true }
   )
   if (!user) {
-    throw new ApiError(404, 'Hotel owner not found')
+    throw new BadRequestError('Hotel owner not found')
   }
 
   notifyUser(

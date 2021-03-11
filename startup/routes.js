@@ -3,7 +3,7 @@ const rateLimit = require('express-rate-limit')
 
 const bodyParser = require('body-parser')
 
-const ApiError = require('../helpers/apiError')
+const { NotFoundError } = require('../helpers/apiError')
 const globalErrorHandler = require('../middleware/globalErrorHandler')
 const verifyToken = require('../middleware/verifyToken')
 const { isAdmin, isHotelOwner } = require('../middleware/role')
@@ -47,7 +47,7 @@ module.exports = function (app) {
   app.use('/api/admin', verifyToken, isAdmin, admin)
 
   app.use('*', (req, res, next) => {
-    next(new ApiError(404, 'Route is not supported.'), req, res, next)
+    next(new NotFoundError('Route is not supported.'), req, res, next)
   })
 
   app.use(globalErrorHandler)

@@ -12,9 +12,13 @@ router.get('/getAllReservations', async (req, res, next) => {
 
 // add new reservation
 // query: startDate | endDate
-router.post('/createReservation', validateCreateReservationData, async (req, res, next) => {
-  reservationController.saveReservation(req, res, next)
-})
+router.post(
+  '/createReservation',
+  validateCreateReservationData,
+  async (req, res, next) => {
+    reservationController.saveReservation(req, res, next)
+  }
+)
 
 // cancel reservation
 router.delete('/removeReservation/:id', async (req, res, next) => {

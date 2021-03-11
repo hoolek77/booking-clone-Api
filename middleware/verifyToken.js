@@ -1,12 +1,13 @@
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const { getUser } = require('../services/userService')
+const { UnauthorizedError } = require('../helpers/apiError')
 
 const verifyToken = async (req, res, next) => {
   const token = req.header('X-Auth-Token')
 
   if (!token) {
-    return res.status(401).json({ message: 'Access denied.' })
+    return next(new UnauthorizedError('Access denied.'))
   }
 
   try {
@@ -21,7 +22,7 @@ const verifyToken = async (req, res, next) => {
 
     next()
   } catch (err) {
-    res.status(400).json({ message: 'Invalid token.' })
+    next(new UnauthorizedError('Invalid token.'))
   }
 }
 
