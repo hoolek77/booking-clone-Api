@@ -36,7 +36,7 @@ const register = async (data) => {
     user.email,
     'Welcome to BookingCloneApi',
     'reg',
-    user.firstName,
+    `${user.firstName} ${user.lastName}`,
     null,
     'BookingCloneApi',
     user.phoneNumber,
