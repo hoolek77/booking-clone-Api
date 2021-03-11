@@ -4,6 +4,8 @@ const Reservation = require('../models/reservation')
 const { BadRequestError, NotFoundError } = require('../helpers/apiError')
 const { formatDate } = require('../helpers/date')
 
+const DEFAULT_PAGE_SIZE = 50
+
 exports.getFreeRooms = async (req) => {
   if (!req.query.startDate || !req.query.endDate)
     throw new BadRequestError('Provide start date and end date.')
@@ -40,19 +42,19 @@ exports.getFreeRooms = async (req) => {
 }
 
 exports.getHotels = async (req) => {
-  if (req.query && req.query.pageNumber && req.query.pageSize) {
-    const { pageNumber, pageSize } = req.query
+  const { city } = req.query
+  const hotelsLength = city
+    ? await Hotel.countDocuments({ 'localization.city': city })
+    : await Hotel.countDocuments()
 
-    const hotelsLength = await Hotel.count()
-    const hotels = await Hotel.find()
-      .skip((+pageNumber - 1) * +pageSize)
-      .limit(+pageSize)
+  const pageNumber = req.query.pageNumber ? req.query.pageNumber : 1
+  const pageSize = req.query.pageSize ? req.query.pageSize : DEFAULT_PAGE_SIZE
 
-    return { hotels, pages: Math.round(hotelsLength / pageSize) }
-  }
-  const hotels = await Hotel.find()
+  const hotels = await Hotel.find(city ? { 'localization.city': city } : null)
+    .skip((+pageNumber - 1) * +pageSize)
+    .limit(+pageSize)
 
-  return hotels
+  return { hotels, pages: Math.ceil(hotelsLength / pageSize) }
 }
 
 exports.getHotel = async (hotelId) => {
@@ -67,12 +69,6 @@ exports.getHotel = async (hotelId) => {
 
 exports.getLimitedHotels = async (limit) => {
   const hotels = await Hotel.find().limit(limit)
-
-  return hotels
-}
-
-exports.getHotelsByCity = async (city) => {
-  const hotels = await Hotel.find({ localization: { city: city } })
 
   return hotels
 }

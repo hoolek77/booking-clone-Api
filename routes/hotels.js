@@ -3,7 +3,7 @@ const hotelController = require('../controllers/hotelsController')
 const router = express.Router()
 const hotelsController = require('../controllers/hotelsController')
 
-// query: pageNumber | pageSize
+// query: pageNumber | pageSize | city
 router.get('', async (req, res, next) => {
   hotelController.getHotels(req, res, next)
 })
@@ -16,11 +16,6 @@ router.get('/getLimitedHotels/:limit', async (req, res, next) => {
 // get hotel by id
 router.get('/:id', async (req, res, next) => {
   hotelController.getHotel(req, res, next)
-})
-
-// get hotel by city name
-router.get('/getHotelsByCity/:city', async (req, res, next) => {
-  hotelController.getHotelsByCity(req, res, next)
 })
 
 // query: startDate | endDate
