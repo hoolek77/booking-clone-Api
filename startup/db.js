@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const config = require('config')
+const logger = require('../helpers/logger')
 
 const host = config.get('database.host')
 const dbName = config.get('database.dbName')
@@ -14,5 +15,5 @@ module.exports = function () {
       useCreateIndex: true,
       useFindAndModify: false,
     })
-    .then(() => console.info('Connected to MongoDB...'))
+    .then(() => logger.info('Connected to the database'))
 }

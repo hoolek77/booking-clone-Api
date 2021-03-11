@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+const logger = require('./helpers/logger')
 const terminateServer = require('./helpers/terminateServer')
 const app = require('./startup/app')
 
@@ -10,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
 // listen to the port
 const port = process.env.PORT || 3000
 const server = app.listen(port, () => {
-  console.info(`Listening on port ${port}...`)
+  logger.info(`Server started and is listenning on port ${port}`)
 })
 
 const exitHandler = terminateServer(server)

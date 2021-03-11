@@ -1,5 +1,6 @@
 const { sendSms } = require('./sms/index')
 const { sendMail } = require('./email/index')
+const logger = require('../helpers/logger')
 
 function notifyUser(
   isSmsAllowed,
@@ -18,7 +19,7 @@ function notifyUser(
       sendSms(from, number, textSms)
     }
   } catch (error) {
-    console.error(error)
+    logger.error(error.message)
   }
 }
 

@@ -1,4 +1,5 @@
 const HttpStatusCode = require('../helpers/HttpStatusCode')
+const logger = require('../helpers/logger')
 
 const sendError = (res, statusCode, errorMessage) => {
   res.status(statusCode).json({
@@ -12,7 +13,7 @@ module.exports = (err, req, res, next) => {
   if (err.isOperational) {
     sendError(res, err.statusCode, err.message)
   } else {
-    console.error(err)
+    logger.error(err.stack)
 
     if (err.name === 'CastError') {
       sendError(
