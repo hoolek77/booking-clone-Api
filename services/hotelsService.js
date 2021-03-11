@@ -8,7 +8,7 @@ exports.getFreeRooms = async (req) => {
   if (!req.query.startDate || !req.query.endDate)
     throw new BadRequestError('Provide start date and end date.')
 
-  const { hotelId } = req.params
+  const { id: hotelId } = req.params
 
   let { startDate, endDate } = req.query
 

@@ -49,43 +49,41 @@ const canReservationBeCancelled = (reservation) => {
   return !reservation.isPaid && currentDate.getTime() < date.getTime()
 }
 
+const mapHotelModel = (hotel, roomId) => {
+  const room = hotel.rooms.id(roomId)
+
+  return {
+    name: hotel.name,
+    address: {
+      country: hotel.localization.country,
+      city: hotel.localization.city,
+      zipcode: hotel.localization.zipcode,
+      street: hotel.localization.street,
+      buildingNumber: hotel.localization.buildingNumber,
+    },
+    room: {
+      roomNumber: room.roomNumber,
+      price: room.price,
+      description: room.description,
+    },
+  }
+}
+
 const getUserReservations = async (user) => {
   const reservations = await Reservation.find({ user: user._id })
     .select('-user')
     .populate({
       path: 'hotel',
       select: 'name localization rooms',
-      populate: {
-        path: 'localization',
-        select: {
-          _id: 0,
-          country: 1,
-          city: 1,
-          zipcode: 1,
-          street: 1,
-          buildingNumber: 1,
-        },
-        model: Address,
-      },
     })
 
   return reservations.map((reservation) => {
-    const room = reservation.hotel.rooms.id(reservation.room)
-
     return {
       _id: reservation._id,
       startDate: reservation.startDate,
       endDate: reservation.endDate,
       people: reservation.people,
-      hotel: {
-        name: reservation.hotel.name,
-        address: reservation.hotel.localization,
-        room: {
-          roomNumber: room.roomNumber,
-          price: room.price,
-          description: room.description,
-        },
-      },
+      hotel: mapHotelModel(reservation.hotel, reservation.room),
     }
   })
 }
@@ -100,38 +98,16 @@ const getHotelOwnerReservations = async (user) => {
     .populate({
       path: 'hotel',
       select: 'name localization rooms',
-      populate: {
-        path: 'localization',
-        select: {
-          _id: 0,
-          country: 1,
-          city: 1,
-          zipcode: 1,
-          street: 1,
-          buildingNumber: 1,
-        },
-        model: Address,
-      },
     })
 
   return reservations.map((reservation) => {
-    const room = reservation.hotel.rooms.id(reservation.room)
-
     return {
       _id: reservation._id,
       isPaid: reservation.isPaid,
       startDate: reservation.startDate,
       endDate: reservation.endDate,
       people: reservation.people,
-      hotel: {
-        name: reservation.hotel.name,
-        address: reservation.hotel.localization,
-        room: {
-          roomNumber: room.roomNumber,
-          price: room.price,
-          description: room.description,
-        },
-      },
+      hotel: mapHotelModel(reservation.hotel, reservation.room),
       user: {
         email: reservation.user.email,
         firstName: reservation.user.firstName,

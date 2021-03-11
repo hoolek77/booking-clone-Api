@@ -11,7 +11,7 @@ exports.getFreeRooms = async (req, res, next) => {
     const freeRooms = await getFreeRooms(req)
     res.status(200).send(freeRooms)
   } catch (error) {
-    next(next)
+    next(error)
   }
 }
 
@@ -26,7 +26,7 @@ exports.getHotels = async (req, res, next) => {
 
 exports.getHotel = async (req, res, next) => {
   try {
-    const hotel = await getHotel(req.params.hotelId)
+    const hotel = await getHotel(req.params.id)
     res.status(200).send(hotel)
   } catch (error) {
     next(error)
