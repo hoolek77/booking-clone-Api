@@ -3,11 +3,11 @@ const {
   saveReservation,
   cancelReservation,
 } = require('../services/reservationsService')
-const getUserFromRequest = require('../helpers/getUserFromRequest')
+const validateUser = require('../helpers/validateUser')
 
 exports.getReservations = async (req, res, next) => {
   try {
-    const user = getUserFromRequest(req)
+    const user = validateUser(req)
     const reservations = await getReservations(user)
     return res.json(reservations)
   } catch (error) {
@@ -17,7 +17,7 @@ exports.getReservations = async (req, res, next) => {
 
 exports.saveReservation = async (req, res, next) => {
   try {
-    const user = getUserFromRequest(req)
+    const user = validateUser(req)
     const success = await saveReservation(user, req.body)
     return res.json({ success })
   } catch (error) {
@@ -27,7 +27,7 @@ exports.saveReservation = async (req, res, next) => {
 
 exports.cancelReservation = async (req, res, next) => {
   try {
-    const user = getUserFromRequest(req)
+    const user = validateUser(req)
     const success = await cancelReservation(user, req.params.id)
     return res.json({ success })
   } catch (error) {

@@ -2,19 +2,23 @@ const { sendSms } = require('./sms/index')
 const { sendMail } = require('./email/index')
 
 function notifyUser(
-  isSmsAllowed,
-  userEmail,
-  subjectEmail,
-  viewEmail,
-  userName,
-  hotelName,
-  from,
-  number,
-  textSms
+  user,
+  emailData = {
+    emailSubject,
+    templateView,
+  },
+  smsData = {
+    smsMsg
+  }
 ) {
-  sendMail(userEmail, subjectEmail, viewEmail, userName, hotelName)
-  if (isSmsAllowed) {
-    sendSms(from, number, textSms)
+  const { isSmsAllowed, email, phoneNumber } = user
+  try {
+    sendMail(emailData, email, user.fullName)
+    if (isSmsAllowed) {
+      sendSms(smsData, phoneNumber)
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
 

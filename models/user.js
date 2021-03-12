@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isSmsAllowed: {
+      type: Boolean,
+      required: true,
+    },
     role: {
       type: String,
       enum: SUPPORTED_ROLES,

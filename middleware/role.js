@@ -1,16 +1,17 @@
-const ApiError = require('../helpers/apiError')
+const { ForbiddenError } = require('../helpers/apiError')
 const { ADMIN_ROLE, HOTEL_OWNER_ROLE, USER_ROLE } = require('../models/roles')
-const getUserFromRequest = require('../helpers/getUserFromRequest')
+const validateUser = require('../helpers/validateUser')
 
 const hasUserAccess = (req, next, role) => {
   try {
-    const user = getUserFromRequest(req)
+    const user = validateUser(req)
+
     if (user.role === role) {
       next()
       return
     }
 
-    throw new ApiError(403, 'Access denied.')
+    throw new ForbiddenError('Access denied.')
   } catch (error) {
     next(error)
   }

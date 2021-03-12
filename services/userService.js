@@ -1,4 +1,4 @@
-const ApiError = require('../helpers/apiError')
+const { ApiError } = require('../helpers/apiError')
 const User = require('../models/user')
 
 exports.getUser = async (userId) => {

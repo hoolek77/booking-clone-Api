@@ -2,8 +2,8 @@
   "name": "Express App - Development",
   "clientUrl": "http://localhost",
   "mail": {
-    "user": "",
-    "pass": ""
+    "user": "bookingcloneapi@gmail.com",
+    "pass": "BOOKINGcloneAPI"
   },
   "sms": {
     "key": "",

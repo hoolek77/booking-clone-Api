@@ -1,14 +1,16 @@
 const { Hotel } = require('../models/hotel')
 const Reservation = require('../models/reservation')
 
-const ApiError = require('../helpers/apiError')
+const { BadRequestError, NotFoundError } = require('../helpers/apiError')
 const { formatDate } = require('../helpers/date')
+
+const DEFAULT_PAGE_SIZE = 50
 
 exports.getFreeRooms = async (req) => {
   if (!req.query.startDate || !req.query.endDate)
-    throw new ApiError(400, 'Provide start date and end date.')
+    throw new BadRequestError('Provide start date and end date.')
 
-  const { hotelId } = req.params
+  const { id: hotelId } = req.params
 
   let { startDate, endDate } = req.query
 
@@ -16,7 +18,7 @@ exports.getFreeRooms = async (req) => {
   endDate = formatDate(endDate, true)
 
   const hotel = await Hotel.findById(hotelId)
-  if (!hotel) throw new ApiError(404, 'Hotel not found')
+  if (!hotel) throw new BadRequestError('Hotel not found')
 
   const freeRooms = []
   const rooms = hotel.rooms
@@ -40,25 +42,26 @@ exports.getFreeRooms = async (req) => {
 }
 
 exports.getHotels = async (req) => {
-  if (req.query && req.query.pageNumber && req.query.pageSize) {
-    const { pageNumber, pageSize } = req.query
+  const { city } = req.query
+  const hotelsLength = city
+    ? await Hotel.countDocuments({ 'localization.city': city })
+    : await Hotel.countDocuments()
 
-    const hotels = await Hotel.find()
-      .skip((+pageNumber - 1) * +pageSize)
-      .limit(+pageSize)
+  const pageNumber = req.query.pageNumber ? req.query.pageNumber : 1
+  const pageSize = req.query.pageSize ? req.query.pageSize : DEFAULT_PAGE_SIZE
 
-    return hotels
-  }
-  const hotels = await Hotel.find()
+  const hotels = await Hotel.find(city ? { 'localization.city': city } : null)
+    .skip((+pageNumber - 1) * +pageSize)
+    .limit(+pageSize)
 
-  return hotels
+  return { hotels, pages: Math.ceil(hotelsLength / pageSize) }
 }
 
 exports.getHotel = async (hotelId) => {
   const hotel = await Hotel.findById(hotelId)
 
   if (!hotel) {
-    throw new ApiError(404, 'Hotel not found')
+    throw new NotFoundError('Hotel not found')
   }
 
   return hotel
@@ -66,12 +69,6 @@ exports.getHotel = async (hotelId) => {
 
 exports.getLimitedHotels = async (limit) => {
   const hotels = await Hotel.find().limit(limit)
-
-  return hotels
-}
-
-exports.getHotelsByCity = async (city) => {
-  const hotels = await Hotel.find({ localization: { city: city } })
 
   return hotels
 }
