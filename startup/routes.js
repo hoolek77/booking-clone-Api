@@ -15,6 +15,7 @@ const hotelOwner = require('../routes/owner')
 const auth = require('../routes/auth')
 const user = require('../routes/user')
 const admin = require('../routes/admin')
+const morganMiddleware = require('../middleware/morganLogger')
 
 const limit = rateLimit({
   max: 100,
@@ -38,6 +39,8 @@ module.exports = function (app) {
     }
     next()
   })
+
+  app.use(morganMiddleware)
 
   app.use('/api', limit)
   app.use('/api/reservations', verifyToken, reservations)
