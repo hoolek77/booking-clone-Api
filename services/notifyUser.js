@@ -3,20 +3,20 @@ const { sendMail } = require('./email/index')
 const logger = require('../helpers/logger')
 
 function notifyUser(
-  isSmsAllowed,
-  userEmail,
-  subjectEmail,
-  viewEmail,
-  userName,
-  hotelName,
-  from,
-  number,
-  textSms
+  user,
+  emailData = {
+    emailSubject,
+    templateView,
+  },
+  smsData = {
+    smsMsg
+  }
 ) {
+  const { isSmsAllowed, email, phoneNumber } = user
   try {
-    sendMail(userEmail, subjectEmail, viewEmail, userName, hotelName)
+    sendMail(emailData, email, user.fullName)
     if (isSmsAllowed) {
-      sendSms(from, number, textSms)
+      sendSms(smsData, phoneNumber)
     }
   } catch (error) {
     logger.error(error.message)

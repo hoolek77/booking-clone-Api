@@ -1,4 +1,4 @@
-const HttpStatusCode = require('../helpers/HttpStatusCode')
+const HttpStatusCode = require('../helpers/httpStatusCode')
 const logger = require('../helpers/logger')
 
 const sendError = (res, statusCode, errorMessage) => {

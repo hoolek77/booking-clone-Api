@@ -4,7 +4,6 @@ const {
   getHotelOwners,
   acceptUserToOwner,
   deleteOwner,
-  deleteUser,
   deleteUsers,
   deleteHotel,
   verifyOwner,
@@ -40,15 +39,6 @@ exports.acceptUserToOwner = async (req, res, next) => {
 exports.deleteOwner = async (req, res, next) => {
   try {
     await deleteOwner(req.params.id)
-    res.sendStatus(200)
-  } catch (error) {
-    next(error)
-  }
-}
-
-exports.deleteUser = async (req, res, next) => {
-  try {
-    const user = await deleteUser(req.params.id)
     res.sendStatus(200)
   } catch (error) {
     next(error)

@@ -36,7 +36,7 @@ exports.addHotel = async (req, res, next) => {
 
 exports.updateHotel = async (req, res, next) => {
   try {
-    const hotel = await updateHotel(req.params.id, req.body)
+    const hotel = await updateHotel(req.params.id, req.body, req.user._id)
     res.status(200).send(hotel)
   } catch (error) {
     next(error)
@@ -47,7 +47,16 @@ exports.deleteHotel = async (req, res, next) => {
   try {
     const { forceDelete } = req.query
     const isForceDelete = forceDelete === 'true'
-    await deleteHotel(req.user, req.params.id, isForceDelete)
+    await deleteHotel(req.user._id, req.params.id, isForceDelete)
+    res.sendStatus(200)
+  } catch (error) {
+    next(error)
+  }
+}
+
+exports.deleteReservation = async (req, res, next) => {
+  try {
+    deleteReservation(req.params.id, req)
     res.sendStatus(200)
   } catch (error) {
     next(error)
