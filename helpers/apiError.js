@@ -1,4 +1,4 @@
-const HttpStatusCode = require('./HttpStatusCode')
+const HttpStatusCode = require('./httpStatusCode')
 
 class ApiError extends Error {
   constructor(statusCode, message, ...params) {
