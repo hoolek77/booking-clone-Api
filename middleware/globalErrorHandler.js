@@ -1,4 +1,4 @@
-const HttpStatusCode = require('../helpers/HttpStatusCode')
+const HttpStatusCode = require('../helpers/httpStatusCode')
 
 const sendError = (res, statusCode, errorMessage) => {
   res.status(statusCode).json({
