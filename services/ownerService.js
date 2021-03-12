@@ -7,7 +7,7 @@ const { isObjIdEqualToMongoId } = require('../helpers/isObjIdEqualToMongoId')
 const { notifyUser } = require('./notifyUser')
 
 exports.addRoom = async (req) => {
-  const { id: hotelId } = req.params.id
+  const { id: hotelId } = req.params
   let hotel = await Hotel.findOne({ _id: hotelId })
   if (!hotel) throw new BadRequestError('Hotel with provided ID was not found.')
   if (!isObjIdEqualToMongoId(req.user._id, hotel.ownerId))
