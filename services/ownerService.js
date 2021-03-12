@@ -51,7 +51,7 @@ exports.updateHotel = async (id, data, userId) => {
     throw new BadRequestError('Hotel not found.')
   }
 
-  if (!isObjIdEqualToMongoId(userId, hotel.ownerId)) {
+  if (!isObjIdEqualToMongoId(userId, hotelUpdate.ownerId)) {
     throw new ForbiddenError('Forbidden')
   }
   await Hotel.findByIdAndUpdate(id, data)
