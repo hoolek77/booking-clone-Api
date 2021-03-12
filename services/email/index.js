@@ -33,7 +33,7 @@ function sendMail({ emailSubject, templateView, hotel }, mail, username) {
   })
 
   const mailOptions = {
-    from: '"Booking Clone API" <bookingcloneapi@gmail.com>',
+    from: '"Booking Clone" <bookingcloneapi@gmail.com>',
     to: mail,
     subject: emailSubject,
     html: htmlToSend,

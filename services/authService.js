@@ -38,7 +38,7 @@ const register = async (data) => {
   notifyUser(
     user,
     {
-      emailSubject: 'Welcome to BookingCloneApi',
+      emailSubject: 'Welcome to Booking Clone',
       templateView: 'reg.html',
     },
     {
