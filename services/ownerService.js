@@ -90,10 +90,10 @@ exports.deleteHotel = async (owner, id, isForceDelete) => {
         {
           emailSubject: 'Reservations removed',
           templateView: 'reservationRemoved.html',
-          hotelName: hotel.name,
+          hotel: hotel.name,
         },
         {
-          smsMsg: 'Your reservations has been cancelled'
+          smsMsg: 'Your reservations has been cancelled',
         }
       )
     })
@@ -107,10 +107,10 @@ exports.deleteHotel = async (owner, id, isForceDelete) => {
     {
       emailSubject: 'Hotel removed',
       templateView: 'hotelRemoved.html',
-      hotelName: hotel.name,
+      hotel: hotel.name,
     },
     {
-      smsMsg: `You removed your hotel: ${hotel.name}`
+      smsMsg: `You removed your hotel: ${hotel.name}`,
     }
   )
 }

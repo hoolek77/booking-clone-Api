@@ -9,12 +9,19 @@ function notifyUser(
     templateView,
   },
   smsData = {
-    smsMsg
+    smsMsg,
   }
 ) {
   const { isSmsAllowed, email, phoneNumber } = user
+
   try {
-    sendMail(emailData, email, user.fullName)
+    const { emailSubject = '', templateView = '', ...restEmailData } = emailData
+
+    sendMail(email, emailSubject, templateView, {
+      ...restEmailData,
+      username: user.fullName,
+    })
+
     if (isSmsAllowed) {
       sendSms(smsData, phoneNumber)
     }
