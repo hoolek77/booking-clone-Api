@@ -169,14 +169,14 @@ const saveReservation = async (user, data) => {
     {
       emailSubject: 'Reservation booked',
       templateView: 'reservation.html',
-      hotelName: hotel.name,
+      hotel: hotel.name,
     },
     {
       smsMsg: `You successfully booked your reservation at: ${hotel.name}`,
     }
   )
 
-  return true
+  return { reservationId: reservation.id }
 }
 
 const cancelReservation = async (user, reservationId) => {
@@ -221,10 +221,10 @@ const cancelReservation = async (user, reservationId) => {
     {
       emailSubject: 'Cancelled reservation',
       templateView: 'reservationRemoved.html',
-      hotelName: hotel.name,
+      hotel: hotel.name,
     },
     {
-      smsMsg: 'Your reservation has been cancelled'
+      smsMsg: 'Your reservation has been cancelled',
     }
   )
 

@@ -13,16 +13,16 @@ function createTemplate(templateView) {
   const template = handlebars.compile(source)
   return template
 }
-function sendMail({ emailSubject, templateView, hotel }, mail, username) {
-
-  const template = createTemplate(templateView)
-
-  const replacements = {
-    username: username,
-    hotel: hotel ? hotel : '',
+function sendMail(
+  recipientEmail,
+  emailSubject,
+  templateView,
+  templateData = {
+    username: '',
   }
-
-  const htmlToSend = template(replacements)
+) {
+  const template = createTemplate(templateView)
+  const htmlToSend = template(templateData)
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -34,7 +34,7 @@ function sendMail({ emailSubject, templateView, hotel }, mail, username) {
 
   const mailOptions = {
     from: '"Booking Clone API" <bookingcloneapi@gmail.com>',
-    to: mail,
+    to: recipientEmail,
     subject: emailSubject,
     html: htmlToSend,
   }
