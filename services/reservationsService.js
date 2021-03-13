@@ -128,10 +128,10 @@ const getReservations = async (user) => {
 const saveReservation = async (user, data) => {
   if (user.isStandardUser) {
     if (!isObjIdEqualToMongoId(user._id, data.user)) {
-      throw new ForbiddenError('You are not allowed to create a reservation.')
+      throw new ForbiddenError('You are not allowed to make a reservation.')
     }
   } else {
-    throw new ForbiddenError('You are not allowed to create a reservation.')
+    throw new ForbiddenError('You are not allowed to make a reservation.')
   }
 
   data.startDate = formatDate(data.startDate, true)

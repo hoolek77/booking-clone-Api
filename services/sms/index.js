@@ -10,7 +10,7 @@ const nexmo = new Nexmo({
 })
 
 const sendSms = ({ smsMsg }, phoneNumber) => {
-  nexmo.message.sendSms("BookingCloneApi", phoneNumber, smsMsg)
+  nexmo.message.sendSms("Booking Clone", phoneNumber, smsMsg)
 }
 
 //phone number format - 48111222333
