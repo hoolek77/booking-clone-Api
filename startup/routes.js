@@ -31,7 +31,7 @@ module.exports = function (app) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header(
       'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept, Autorization'
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Auth-Token'
     )
     if (req.method === 'OPTIONS') {
       res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE')
