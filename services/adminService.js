@@ -62,10 +62,11 @@ exports.deleteUsers = async (users, isForceDelete) => {
           user,
           {
             emailSubject: 'Account Deleted',
-            templateView: 'userDeletedAndReservationsCanceled.html'
+            templateView: 'userDeletedAndReservationsCanceled.html',
           },
           {
-            smsMsg: 'Your account has been deleted by admin, your reservations has been cancelled'
+            smsMsg:
+              'Your account has been deleted by admin, your reservations has been cancelled',
           }
         )
       })
@@ -84,7 +85,7 @@ exports.deleteUsers = async (users, isForceDelete) => {
         templateView: 'remove.html',
       },
       {
-        smsMsg: 'Your account has been deleted by admin'
+        smsMsg: 'Your account has been deleted by admin',
       }
     )
   }
@@ -106,10 +107,10 @@ exports.deleteHotel = async (hotelId, isForceDelete) => {
         {
           emailSubject: 'Cancelled reservation',
           templateView: 'reservationRemoved.html',
-          hotelName: name,
+          hotel: name,
         },
         {
-          smsMsg: 'Your reservation has been cancelled'
+          smsMsg: 'Your reservation has been cancelled',
         }
       )
     })
@@ -136,7 +137,8 @@ exports.verifyOwner = async (id) => {
       templateView: 'owner.html',
     },
     {
-      smsMsg: 'You are now veryfied as a Hotel Owner. Your hotels are now available'
+      smsMsg:
+        'You are now veryfied as a Hotel Owner. Your hotels are now available',
     }
   )
   return user

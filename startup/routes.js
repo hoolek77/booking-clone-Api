@@ -15,6 +15,7 @@ const hotelOwner = require('../routes/owner')
 const auth = require('../routes/auth')
 const user = require('../routes/user')
 const admin = require('../routes/admin')
+const morganMiddleware = require('../middleware/morganLogger')
 
 const limit = rateLimit({
   max: 100,
@@ -30,7 +31,7 @@ module.exports = function (app) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header(
       'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept, Autorization'
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Auth-Token'
     )
     if (req.method === 'OPTIONS') {
       res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE')
@@ -38,6 +39,8 @@ module.exports = function (app) {
     }
     next()
   })
+
+  app.use(morganMiddleware)
 
   app.use('/api', limit)
   app.use('/api/reservations', verifyToken, reservations)

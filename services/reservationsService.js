@@ -9,35 +9,12 @@ const {
 } = require('./hotelsService')
 const { Hotel } = require('../models/hotel')
 const { addDaysToDate, formatDate } = require('../helpers/date')
+const { isRoomAvailable } = require('./hotelsService')
 const { ForbiddenError, BadRequestError } = require('../helpers/apiError')
 const { isObjIdEqualToMongoId } = require('../helpers/isObjIdEqualToMongoId')
 const { notifyUser } = require('./notifyUser')
 
 const CANCELLATION_DATE = 3
-
-const isRoomAvailable = async (hotelId, roomId, startDate, endDate) => {
-  return !(await Reservation.exists({
-    hotel: hotelId,
-    room: roomId,
-    $or: [
-      // start after startDate and after before endDate --- |
-      {
-        startDate: { $lt: startDate, $lt: endDate },
-        endDate: { $gt: startDate, $lt: endDate },
-      },
-      // between some reservation time
-      {
-        startDate: { $lte: startDate, $lte: endDate },
-        endDate: { $gte: startDate, $gte: endDate },
-      },
-      // start before startDate and end before endDate | ---
-      {
-        startDate: { $gt: startDate, $lt: endDate },
-        endDate: { $gt: startDate, $lt: endDate },
-      },
-    ],
-  }))
-}
 
 const canReservationBeCancelled = (reservation) => {
   const date = addDaysToDate(
@@ -128,10 +105,10 @@ const getReservations = async (user) => {
 const saveReservation = async (user, data) => {
   if (user.isStandardUser) {
     if (!isObjIdEqualToMongoId(user._id, data.user)) {
-      throw new ForbiddenError('You are not allowed to create a reservation.')
+      throw new ForbiddenError('You are not allowed to make a reservation.')
     }
   } else {
-    throw new ForbiddenError('You are not allowed to create a reservation.')
+    throw new ForbiddenError('You are not allowed to make a reservation.')
   }
 
   data.startDate = formatDate(data.startDate, true)
@@ -169,14 +146,14 @@ const saveReservation = async (user, data) => {
     {
       emailSubject: 'Reservation booked',
       templateView: 'reservation.html',
-      hotelName: hotel.name,
+      hotel: hotel.name,
     },
     {
       smsMsg: `You successfully booked your reservation at: ${hotel.name}`,
     }
   )
 
-  return true
+  return { reservationId: reservation.id }
 }
 
 const cancelReservation = async (user, reservationId) => {
@@ -221,10 +198,10 @@ const cancelReservation = async (user, reservationId) => {
     {
       emailSubject: 'Cancelled reservation',
       templateView: 'reservationRemoved.html',
-      hotelName: hotel.name,
+      hotel: hotel.name,
     },
     {
-      smsMsg: 'Your reservation has been cancelled'
+      smsMsg: 'Your reservation has been cancelled',
     }
   )
 
@@ -246,7 +223,6 @@ const updatePayment = async (id) => {
 module.exports = {
   getReservations,
   saveReservation,
-  isRoomAvailable,
   cancelReservation,
   updatePayment,
 }

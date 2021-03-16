@@ -1,14 +1,14 @@
 const {
-  getFreeRooms,
   getHotels,
   getHotel,
   getLimitedHotels,
   getHotelsByCity,
+  getAvailableHotelRooms
 } = require('../services/hotelsService')
 
-exports.getFreeRooms = async (req, res, next) => {
+exports.getAvailableHotelRooms = async (req, res, next) => {
   try {
-    const freeRooms = await getFreeRooms(req)
+    const freeRooms = await getAvailableHotelRooms(req)
     res.status(200).send(freeRooms)
   } catch (error) {
     next(error)

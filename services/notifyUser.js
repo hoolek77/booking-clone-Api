@@ -1,5 +1,6 @@
 const { sendSms } = require('./sms/index')
 const { sendMail } = require('./email/index')
+const logger = require('../helpers/logger')
 
 function notifyUser(
   user,
@@ -8,17 +9,24 @@ function notifyUser(
     templateView,
   },
   smsData = {
-    smsMsg
+    smsMsg,
   }
 ) {
   const { isSmsAllowed, email, phoneNumber } = user
+
   try {
-    sendMail(emailData, email, user.fullName)
+    const { emailSubject = '', templateView = '', ...restEmailData } = emailData
+
+    sendMail(email, emailSubject, templateView, {
+      ...restEmailData,
+      username: user.fullName,
+    })
+
     if (isSmsAllowed) {
       sendSms(smsData, phoneNumber)
     }
   } catch (error) {
-    console.error(error)
+    logger.error(error.message)
   }
 }
 

@@ -18,8 +18,8 @@ exports.getReservations = async (req, res, next) => {
 exports.saveReservation = async (req, res, next) => {
   try {
     const user = validateUser(req)
-    const success = await saveReservation(user, req.body)
-    return res.json({ success })
+    const reservationId = await saveReservation(user, req.body)
+    return res.json(reservationId)
   } catch (error) {
     next(error)
   }
