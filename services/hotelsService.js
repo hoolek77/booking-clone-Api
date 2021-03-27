@@ -94,12 +94,7 @@ exports.getHotels = async (req) => {
         children
       )
       if (isAvailable) {
-        freeHotels.push({
-          id: hotel._id,
-          name: hotel.name,
-          description: hotel.description,
-          clientsRates: hotel.clientsRates,
-        })
+        freeHotels.push(hotel)
       }
     }
 
