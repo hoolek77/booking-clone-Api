@@ -31,7 +31,7 @@ exports.acceptUserToOwner = async (id) => {
 
 exports.deleteOwner = async (id) => {
   const hotel = await Hotel.find({ ownerId: id })
-  if (hotel) throw new BadRequestError('Remove hotel(s) first')
+  if (hotel.length > 0) throw new BadRequestError('Remove hotel(s) first')
   const user = await User.findOneAndDelete({
     _id: id,
     role: HOTEL_OWNER_ROLE,
