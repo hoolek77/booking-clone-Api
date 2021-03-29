@@ -2,6 +2,7 @@ const {
   getReservations,
   saveReservation,
   cancelReservation,
+  updatePayment,
 } = require('../services/reservationsService')
 const validateUser = require('../helpers/validateUser')
 
