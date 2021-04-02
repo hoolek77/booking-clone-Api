@@ -200,3 +200,33 @@ exports.getAvailableHotelRooms = async (req) => {
 
   return freeRooms
 }
+
+exports.getAvailableHotelRooms = async (req) => {
+  const { id: hotelId } = req.params
+  const { adults, children, startDate, endDate } = req.query
+
+  const hotel = await Hotel.findOne({ _id: hotelId })
+
+  if (!hotel) {
+    throw new NotFoundError('Hotel not found.')
+  }
+
+  const rooms = filterRooms(hotel, adults, children)
+
+  const freeRooms = []
+
+  for (let room of rooms) {
+    if (
+      await isRoomAvailable(
+        hotelId,
+        room._id,
+        formatDate(startDate, true),
+        formatDate(endDate, true)
+      )
+    ) {
+      freeRooms.push(room)
+    }
+  }
+
+  return freeRooms
+}
