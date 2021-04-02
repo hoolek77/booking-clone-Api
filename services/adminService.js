@@ -2,8 +2,23 @@ const { BadRequestError } = require('../helpers/apiError')
 const User = require('../models/user')
 const Reservation = require('../models/reservation')
 const { Hotel } = require('../models/hotel')
+const { City } = require('../models/city')
 const { HOTEL_OWNER_ROLE, USER_ROLE } = require('../models/roles')
 const { notifyUser } = require('./notifyUser')
+
+exports.addCity = async (data) => {
+  const cityName = data.name.toLowerCase()
+  const allCity = await City.find()
+  allCity.map((city) => {
+    if (city.name.toLowerCase() === cityName) {
+      throw new BadRequestError('This city already exists')
+    }
+  })
+
+  const city = new City(data)
+  await city.save()
+  return city
+}
 
 exports.getUsers = async (userRole, hotelOwnerRole) => {
   const users = await User.find({ role: { $in: [userRole, hotelOwnerRole] } })

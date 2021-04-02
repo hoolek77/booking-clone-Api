@@ -503,6 +503,55 @@ It allows user to book a room in the hotel.
     }
     ```
 
+## Update reservation payment
+
+It allows to update users reservation payment.
+
+### Request
+
+`PUT /api/reservations/pay/:id`
+
+- **Body**
+  No body data required.
+
+- **Params**
+
+  `:id` - reservation identifier
+
+### Response
+
+- **Success Response:**
+
+  Status Code: 200 OK
+
+  ```javascript
+  {
+    "success": true
+  }
+  ```
+
+- **Error Response:**
+
+  - Status Code: 401 Unauthorized
+
+    Body:
+
+    ```javascript
+    {
+      "message": "Invalid token."
+    }
+    ```
+
+  - Status Code: 400 Bad Request
+
+    Body:
+
+    ```javascript
+    {
+      "message": "Reservation not found."
+    }
+    ```
+
 ## Cancel a room reservation
 
 It allows user to cancel a room reservation in the hotel.
