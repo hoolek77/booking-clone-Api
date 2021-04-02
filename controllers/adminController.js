@@ -1,5 +1,6 @@
 const { HOTEL_OWNER_ROLE, USER_ROLE } = require('../models/roles')
 const {
+  addCity,
   getUsers,
   getHotelOwners,
   acceptUserToOwner,
@@ -8,6 +9,15 @@ const {
   deleteHotel,
   verifyOwner,
 } = require('../services/adminService')
+
+exports.addCity = async (req, res, next) => {
+  try {
+    const city = await addCity(req.body)
+    res.status(200).send(city)
+  } catch (error) {
+    next(error)
+  }
+}
 
 exports.getUsers = async (req, res, next) => {
   try {
