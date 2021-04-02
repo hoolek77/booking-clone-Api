@@ -6,12 +6,9 @@ const citySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-<<<<<<< HEAD
-=======
     value: {
       type: String,
     },
->>>>>>> dev
   },
   { timestamps: true }
 )

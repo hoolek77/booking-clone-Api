@@ -85,27 +85,12 @@ exports.getHotels = async (req) => {
   return { hotels, pages: Math.ceil(hotelsLength / pageSize) }
 }
 
-<<<<<<< HEAD
-    for (let hotel of hotels) {
-      const isAvailable = await isHotelAvailable(
-        hotel._id,
-        formatDate(startDate, true),
-        formatDate(endDate, true),
-        adults,
-        children
-      )
-      if (isAvailable) {
-        freeHotels.push(hotel)
-      }
-    }
-=======
 exports.getAvailableHotels = async (req) => {
   const { city, adults, children, startDate, endDate } = req.query
   let { pageNumber, pageSize } = req.query
   if (!adults || !children || !startDate || !endDate) {
     throw new NotFoundError('Dates, city and adults/children must be provided.')
   }
->>>>>>> dev
 
   const hotels = await Hotel.find(city ? { 'localization.city': city } : null)
 

@@ -16,10 +16,7 @@ exports.addCity = async (data) => {
   })
 
   const city = new City(data)
-<<<<<<< HEAD
-=======
   city.value = city.name.toLowerCase()
->>>>>>> dev
   await city.save()
   return city
 }

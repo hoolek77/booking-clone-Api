@@ -41,11 +41,7 @@ exports.getHotels = async (data) => {
 
 exports.addHotel = async (data) => {
   const hotel = new Hotel(data)
-<<<<<<< HEAD
-  const city = await City.find({ name: hotel.localization.city.toLowerCase() })
-=======
   const city = await City.find({ value: hotel.localization.city.toLowerCase() })
->>>>>>> dev
   if (!city.length > 0) {
     throw new BadRequestError('This city is not allowed')
   }
