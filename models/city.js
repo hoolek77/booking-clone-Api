@@ -6,6 +6,9 @@ const citySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    value: {
+      type: String,
+    },
   },
   { timestamps: true }
 )

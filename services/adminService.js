@@ -16,6 +16,7 @@ exports.addCity = async (data) => {
   })
 
   const city = new City(data)
+  city.value = city.name.toLowerCase()
   await city.save()
   return city
 }
