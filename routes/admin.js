@@ -7,6 +7,11 @@ router.get('/users', async (req, res, next) => {
   adminController.getUsers(req, res, next)
 })
 
+// add new city
+router.post('/city', async (req, res, next) => {
+  adminController.addCity(req, res, next)
+})
+
 // get all hotel owners
 router.get('/hotelOwners', async (req, res, next) => {
   adminController.getHotelOwners(req, res, next)

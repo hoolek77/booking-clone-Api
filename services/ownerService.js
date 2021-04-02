@@ -5,6 +5,7 @@ const User = require('../models/user')
 const Reservation = require('../models/reservation')
 const { isObjIdEqualToMongoId } = require('../helpers/isObjIdEqualToMongoId')
 const { notifyUser } = require('./notifyUser')
+const { City } = require('../models/city')
 
 exports.addRoom = async (req) => {
   const { id: hotelId } = req.params
@@ -40,6 +41,10 @@ exports.getHotels = async (data) => {
 
 exports.addHotel = async (data) => {
   const hotel = new Hotel(data)
+  const city = await City.find({ name: hotel.localization.city.toLowerCase() })
+  if (!city.length > 0) {
+    throw new BadRequestError('This city is not allowed')
+  }
   await hotel.save()
   return hotel
 }
