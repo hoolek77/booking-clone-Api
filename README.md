@@ -1131,6 +1131,73 @@ It allows to get all hotels
 - **Query**
 
   `pageNumber = [ page number ]`
+  `pageSize = [ page size ]`
+  `city = [ "city" ]`
+
+### Response
+
+- **Success Response:**
+
+  Status Code: 200 OK
+
+  Body:
+
+  ```javascript
+  {
+    "hotels":[
+        {
+        "description": "[hotel description]",
+        "_id": "[hotel identifier]",
+        "localization": {
+            "_id": "[localization identifier]",
+            "city": "[localization city]",
+            "country": "[localization country]",
+            "zipcode": "[localization zipcode]",
+            "street": "[localization street]",
+            "buildingNumber": [localization building number]
+        },
+        "phoneNumber": "[hotel phone number]",
+        "name": "[hotel name]",
+        "email": "[hotel email]",
+        "rooms": [
+            {
+            "description": "[room description]",
+            "_id": "[room identifier]",
+            "roomNumber": "[room nuber]",
+            "beds": {
+              "single": "[single beds number]",
+              "double": "[double beds number]"
+            },
+            "price": [room price],
+            "createdAt": "[created date]",
+            "updatedAt": "[updated date]"
+            }
+        ],
+        "ownerId": "[hotel owner identifier]",
+        "clientsRates": [hotel clients rates],
+        "createdAt": "[created date]",
+        "updatedAt": "[updated date]"
+        }
+    ],
+    "pages": [pages number]
+  }
+  ```
+
+- **Error Response:**
+
+  No error
+
+  ## Get all available hotels <!-- HOTELS -->
+
+It allows to get all hotels
+
+### Request
+
+`GET /api/hotels/getAvailable`
+
+- **Query**
+
+  `pageNumber = [ page number ]`
   `pageSize = [ page size `
   `city = [ "page number" ]`
   `adults = [ "adults number" ]`

@@ -68,7 +68,7 @@ const isRoomAvailable = async (hotelId, roomId, startDate, endDate) => {
 exports.isRoomAvailable = isRoomAvailable
 
 exports.getHotels = async (req) => {
-  const { city, adults, children, startDate, endDate } = req.query
+  const { city } = req.query
   let { pageNumber, pageSize } = req.query
 
   const hotelsLength = city
@@ -82,29 +82,43 @@ exports.getHotels = async (req) => {
     .skip((+pageNumber - 1) * +pageSize)
     .limit(+pageSize)
 
-  if (startDate && endDate) {
-    const freeHotels = []
+  return { hotels, pages: Math.ceil(hotelsLength / pageSize) }
+}
 
-    for (let hotel of hotels) {
-      const isAvailable = await isHotelAvailable(
-        hotel._id,
-        formatDate(startDate, true),
-        formatDate(endDate, true),
-        adults,
-        children
-      )
-      if (isAvailable) {
-        freeHotels.push(hotel)
-      }
-    }
+exports.getAvailableHotels = async (req) => {
+  const { city, adults, children, startDate, endDate } = req.query
+  let { pageNumber, pageSize } = req.query
+  if (!adults || !children || !startDate || !endDate) {
+    throw new NotFoundError('Dates, city and adults/children must be provided.')
+  }
 
-    return {
-      hotels: freeHotels,
-      pages: Math.ceil(freeHotels.length / pageSize),
+  const hotels = await Hotel.find(city ? { 'localization.city': city } : null)
+
+  const availableHotels = []
+  for (let hotel of hotels) {
+    const isAvailable = await isHotelAvailable(
+      hotel._id,
+      formatDate(startDate, true),
+      formatDate(endDate, true),
+      adults,
+      children
+    )
+    if (isAvailable) {
+      availableHotels.push(hotel)
     }
   }
 
-  return { hotels, pages: Math.ceil(hotelsLength / pageSize) }
+  pageNumber = pageNumber ? pageNumber : 1
+  pageSize = pageSize ? pageSize : DEFAULT_PAGE_SIZE
+
+  const paginatedHotels = availableHotels.slice(
+    (pageNumber - 1) * pageSize,
+    pageSize * pageNumber
+  )
+  return {
+    hotels: paginatedHotels,
+    pages: Math.ceil(availableHotels.length / pageSize),
+  }
 }
 
 exports.getHotel = async (hotelId) => {
