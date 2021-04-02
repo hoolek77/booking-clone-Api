@@ -3,9 +3,14 @@ const hotelController = require('../controllers/hotelsController')
 const router = express.Router()
 const hotelsController = require('../controllers/hotelsController')
 
-// query: pageNumber | pageSize | city | adults | children | startDate | endDate
+// query: city
 router.get('', async (req, res, next) => {
   hotelController.getHotels(req, res, next)
+})
+
+// query: pageNumber | pageSize | city | adults | children | startDate | endDate
+router.get('/getAvailable', async (req, res, next) => {
+  hotelController.getAvailableHotels(req, res, next)
 })
 
 // get limited amount of hotels
