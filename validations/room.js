@@ -9,7 +9,7 @@ module.exports = function validateRoom(data) {
       double: Joi.number().min(0).required(),
     },
     price: Joi.number().min(10).required(),
-    description: Joi.string(),
+    description: Joi.string().allow(''),
   })
 
   return validateData(data, schema)

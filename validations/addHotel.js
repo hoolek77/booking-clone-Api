@@ -26,7 +26,7 @@ module.exports = function validateAddHotelData(data) {
     name: Joi.string().min(1).required(),
     clientsRate: Joi.array().items(rateSchema),
     email: Joi.string().email().required(),
-    description: Joi.string(),
+    description: Joi.string().allow(''),
     rooms: Joi.array().min(1).items(roomSchema).required(),
   })
 
